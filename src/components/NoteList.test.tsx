@@ -187,4 +187,38 @@ describe('NoteList', () => {
     expect(screen.getByTitle('Search notes')).toBeInTheDocument()
     expect(screen.getByTitle('Create new note')).toBeInTheDocument()
   })
+
+  it('context view shows backlinks from allContent', () => {
+    const allContent = {
+      [mockEntries[2].path]: 'Met with [[project/26q1-laputa-app]] team.',
+    }
+    render(
+      <NoteList entries={mockEntries} selection={{ kind: 'entity', entry: mockEntries[0] }} selectedNote={null} onSelectNote={noopSelect} allContent={allContent} onCreateNote={vi.fn()} />
+    )
+    expect(screen.getByText('Backlinks')).toBeInTheDocument()
+    expect(screen.getByText('Matteo Cellini')).toBeInTheDocument()
+  })
+
+  it('context view collapses and expands groups', () => {
+    render(
+      <NoteList entries={mockEntries} selection={{ kind: 'entity', entry: mockEntries[0] }} selectedNote={null} onSelectNote={noopSelect} allContent={{}} onCreateNote={vi.fn()} />
+    )
+    // Children group is expanded by default
+    expect(screen.getByText('Facebook Ads Strategy')).toBeInTheDocument()
+    // Click the Children header to collapse
+    fireEvent.click(screen.getByText('Children'))
+    // Items should be hidden
+    expect(screen.queryByText('Facebook Ads Strategy')).not.toBeInTheDocument()
+    // Click again to expand
+    fireEvent.click(screen.getByText('Children'))
+    expect(screen.getByText('Facebook Ads Strategy')).toBeInTheDocument()
+  })
+
+  it('context view shows prominent card with entity snippet', () => {
+    render(
+      <NoteList entries={mockEntries} selection={{ kind: 'entity', entry: mockEntries[0] }} selectedNote={null} onSelectNote={noopSelect} allContent={{}} onCreateNote={vi.fn()} />
+    )
+    // Snippet appears in the prominent card
+    expect(screen.getByText('Build a personal knowledge management app.')).toBeInTheDocument()
+  })
 })

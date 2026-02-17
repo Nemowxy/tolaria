@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import {
   MagnifyingGlass, Plus, Wrench, Flask, Target, ArrowsClockwise,
-  Users, CalendarBlank, Tag, FileText,
+  Users, CalendarBlank, Tag, FileText, CaretDown, CaretRight,
 } from '@phosphor-icons/react'
 import type { ComponentType, SVGAttributes } from 'react'
 import { getTypeColor, getTypeLightColor } from '../utils/typeColors'
@@ -86,7 +86,30 @@ function sortByModified(a: VaultEntry, b: VaultEntry): number {
   return (getDisplayDate(b) ?? 0) - (getDisplayDate(a) ?? 0)
 }
 
-function buildRelationshipGroups(entity: VaultEntry, allEntries: VaultEntry[]): RelationshipGroup[] {
+function findBacklinks(entity: VaultEntry, allEntries: VaultEntry[], allContent: Record<string, string>): VaultEntry[] {
+  const stem = entity.filename.replace(/\.md$/, '')
+  const pathStem = entity.path.replace(/^.*\/Laputa\//, '').replace(/\.md$/, '')
+  const targets = [entity.title, ...entity.aliases]
+
+  return allEntries.filter((e) => {
+    if (e.path === entity.path) return false
+    const content = allContent[e.path]
+    if (!content) return false
+    for (const t of targets) {
+      if (content.includes(`[[${t}]]`)) return true
+    }
+    if (content.includes(`[[${stem}]]`)) return true
+    if (content.includes(`[[${pathStem}]]`)) return true
+    if (content.includes(`[[${pathStem}|`)) return true
+    return false
+  })
+}
+
+function buildRelationshipGroups(
+  entity: VaultEntry,
+  allEntries: VaultEntry[],
+  allContent: Record<string, string>,
+): RelationshipGroup[] {
   const groups: RelationshipGroup[] = []
   const seen = new Set<string>([entity.path])
 
@@ -131,6 +154,13 @@ function buildRelationshipGroups(entity: VaultEntry, allEntries: VaultEntry[]): 
     relatedTo.forEach((e) => seen.add(e.path))
   }
 
+  const backlinks = findBacklinks(entity, allEntries, allContent)
+    .filter((e) => !seen.has(e.path))
+    .sort(sortByModified)
+  if (backlinks.length > 0) {
+    groups.push({ label: 'Backlinks', entries: backlinks })
+  }
+
   return groups
 }
 
@@ -155,15 +185,25 @@ function filterEntries(entries: VaultEntry[], selection: SidebarSelection, _modi
   }
 }
 
-function NoteListInner({ entries, selection, selectedNote, modifiedFiles, onSelectNote, onCreateNote }: NoteListProps) {
+function NoteListInner({ entries, selection, selectedNote, allContent, modifiedFiles, onSelectNote, onCreateNote }: NoteListProps) {
   const [search, setSearch] = useState('')
   const [searchVisible, setSearchVisible] = useState(false)
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set())
 
   const isEntityView = selection.kind === 'entity'
 
+  const toggleGroup = useCallback((label: string) => {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev)
+      if (next.has(label)) next.delete(label)
+      else next.add(label)
+      return next
+    })
+  }, [])
+
   const entityGroups = useMemo(
-    () => isEntityView ? buildRelationshipGroups(selection.entry, entries) : [],
-    [isEntityView, selection, entries]
+    () => isEntityView ? buildRelationshipGroups(selection.entry, entries, allContent) : [],
+    [isEntityView, selection, entries, allContent]
   )
 
   const filtered = useMemo(
@@ -284,28 +324,70 @@ function NoteListInner({ entries, selection, selectedNote, modifiedFiles, onSele
 
       {/* Items */}
       <div className="flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-        {isEntityView ? (
-          <div className="h-full overflow-y-auto">
-            {renderItem(selection.entry, true)}
-            {searchedGroups.length === 0 ? (
-              <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">
-                {query ? 'No matching items' : 'No related items'}
-              </div>
-            ) : (
-              searchedGroups.map((group) => (
-                <div key={group.label} className="border-t border-[var(--border-subtle)]">
-                  <div className="flex items-center justify-between px-4 py-2.5 pt-3">
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                      {group.label}
-                    </span>
-                    <span className="rounded-full bg-secondary px-1.5 py-px text-[10px] text-muted-foreground">{group.entries.length}</span>
-                  </div>
-                  {group.entries.map((entry) => renderItem(entry))}
+        {isEntityView ? (() => {
+          const entity = selection.entry
+          const entityTypeColor = getTypeColor(entity.isA)
+          const entityLightColor = getTypeLightColor(entity.isA)
+          const EntityIcon = getTypeIcon(entity.isA)
+          return (
+            <div className="h-full overflow-y-auto">
+              {/* Prominent card */}
+              <div
+                className="relative cursor-pointer border-b border-[var(--border)]"
+                style={{ backgroundColor: entityLightColor, padding: '14px 16px' }}
+                onClick={() => onSelectNote(entity)}
+              >
+                <EntityIcon
+                  width={16}
+                  height={16}
+                  className="absolute right-3 top-3.5"
+                  style={{ color: entityTypeColor }}
+                  data-testid="type-icon"
+                />
+                <div className="pr-6 text-[14px] font-bold" style={{ color: entityTypeColor }}>
+                  {entity.title}
                 </div>
-              ))
-            )}
-          </div>
-        ) : (
+                <div className="mt-1 text-[12px] leading-[1.5] opacity-80" style={{ color: entityTypeColor, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {entity.snippet}
+                </div>
+                <div className="mt-1 text-[11px] opacity-60" style={{ color: entityTypeColor }}>
+                  {relativeDate(getDisplayDate(entity))}
+                </div>
+              </div>
+
+              {/* Relationship groups */}
+              {searchedGroups.length === 0 ? (
+                <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+                  {query ? 'No matching items' : 'No related items'}
+                </div>
+              ) : (
+                searchedGroups.map((group) => {
+                  const isCollapsed = collapsedGroups.has(group.label)
+                  return (
+                    <div key={group.label} className="border-t border-[var(--border-subtle)]">
+                      <button
+                        className="flex w-full items-center justify-between border-none bg-transparent px-4 py-2.5 pt-3 cursor-pointer"
+                        onClick={() => toggleGroup(group.label)}
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span className="text-[11px] font-semibold uppercase text-muted-foreground" style={{ letterSpacing: '0.05em' }}>
+                            {group.label}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">{group.entries.length}</span>
+                        </span>
+                        {isCollapsed
+                          ? <CaretRight size={12} className="text-muted-foreground" />
+                          : <CaretDown size={12} className="text-muted-foreground" />
+                        }
+                      </button>
+                      {!isCollapsed && group.entries.map((entry) => renderItem(entry))}
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          )
+        })() : (
           searched.length === 0 ? (
             <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">No notes found</div>
           ) : (
