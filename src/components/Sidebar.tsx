@@ -2,6 +2,7 @@ import { useState, memo, type ComponentType } from 'react'
 import type { VaultEntry, SidebarSelection } from '../types'
 import { cn } from '@/lib/utils'
 import { ChevronRight, ChevronDown, GitCommitHorizontal } from 'lucide-react'
+import { getTypeColor, getTypeLightColor } from '../utils/typeColors'
 import {
   FileText,
   Star,
@@ -31,14 +32,14 @@ const TOP_NAV = [
   { label: 'Favorites', filter: 'favorites' as const, Icon: Star },
 ]
 
-const SECTION_GROUPS: { label: string; type: string; Icon: ComponentType<IconProps>; color: string }[] = [
-  { label: 'Projects', type: 'Project', Icon: Wrench, color: 'var(--accent-red)' },
-  { label: 'Experiments', type: 'Experiment', Icon: Flask, color: 'var(--accent-red)' },
-  { label: 'Responsibilities', type: 'Responsibility', Icon: Target, color: 'var(--accent-purple)' },
-  { label: 'Procedures', type: 'Procedure', Icon: ArrowsClockwise, color: 'var(--accent-purple)' },
-  { label: 'People', type: 'Person', Icon: Users, color: 'var(--accent-yellow)' },
-  { label: 'Events', type: 'Event', Icon: CalendarBlank, color: 'var(--accent-yellow)' },
-  { label: 'Topics', type: 'Topic', Icon: Tag, color: 'var(--accent-green)' },
+const SECTION_GROUPS: { label: string; type: string; Icon: ComponentType<IconProps> }[] = [
+  { label: 'Projects', type: 'Project', Icon: Wrench },
+  { label: 'Experiments', type: 'Experiment', Icon: Flask },
+  { label: 'Responsibilities', type: 'Responsibility', Icon: Target },
+  { label: 'Procedures', type: 'Procedure', Icon: ArrowsClockwise },
+  { label: 'People', type: 'Person', Icon: Users },
+  { label: 'Events', type: 'Event', Icon: CalendarBlank },
+  { label: 'Topics', type: 'Topic', Icon: Tag },
 ]
 
 export const Sidebar = memo(function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCount = 0, onCommitPush }: SidebarProps) {
@@ -47,10 +48,7 @@ export const Sidebar = memo(function Sidebar({ entries, selection, onSelect, onS
     setCollapsed((prev) => ({ ...prev, [type]: !prev[type] }))
   }
 
-  const getSectionColor = (entry: VaultEntry) => {
-    const section = SECTION_GROUPS.find(s => s.type === entry.isA)
-    return section?.color || 'var(--foreground)'
-  }
+  const getSectionColor = (entry: VaultEntry) => getTypeColor(entry.isA)
 
   const isActive = (sel: SidebarSelection): boolean => {
     if (selection.kind !== sel.kind) return false
@@ -116,7 +114,7 @@ export const Sidebar = memo(function Sidebar({ entries, selection, onSelect, onS
         </div>
 
         {/* Section Groups */}
-        {SECTION_GROUPS.map(({ label, type, Icon, color }) => {
+        {SECTION_GROUPS.map(({ label, type, Icon }) => {
           const items = type === 'Topic'
             ? entries.filter((e) => e.isA === 'Topic')
             : entries.filter((e) => e.isA === type)
@@ -137,7 +135,7 @@ export const Sidebar = memo(function Sidebar({ entries, selection, onSelect, onS
                 onClick={() => onSelect({ kind: 'sectionGroup', type })}
               >
                 <div className="flex items-center" style={{ gap: 8 }}>
-                  <Icon size={16} style={{ color }} />
+                  <Icon size={16} style={{ color: getTypeColor(type) }} />
                   <span className="text-[13px] font-medium text-foreground">{label}</span>
                 </div>
                 <button
@@ -167,7 +165,7 @@ export const Sidebar = memo(function Sidebar({ entries, selection, onSelect, onS
                       style={{
                         padding: '4px 16px 4px 28px',
                         ...(isActive(isTopic ? { kind: 'topic', entry } : { kind: 'entity', entry }) && {
-                          backgroundColor: `${getSectionColor(entry).replace(')', '-light)')}`,
+                          backgroundColor: getTypeLightColor(entry.isA),
                           color: getSectionColor(entry),
                         }),
                       }}
