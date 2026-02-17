@@ -7,7 +7,7 @@ import {
   Gear,
   FileText,
   Star,
-  FolderOpen,
+  Wrench,
   Flask,
   Target,
   ArrowsClockwise,
@@ -16,6 +16,7 @@ import {
   Tag,
   TagSimple,
   Trash,
+  SidebarSimple,
   type IconProps,
 } from '@phosphor-icons/react'
 
@@ -34,7 +35,7 @@ const TOP_NAV = [
 ]
 
 const SECTION_GROUPS: { label: string; type: string; Icon: ComponentType<IconProps> }[] = [
-  { label: 'Projects', type: 'Project', Icon: FolderOpen },
+  { label: 'Projects', type: 'Project', Icon: Wrench },
   { label: 'Experiments', type: 'Experiment', Icon: Flask },
   { label: 'Responsibilities', type: 'Responsibility', Icon: Target },
   { label: 'Procedures', type: 'Procedure', Icon: ArrowsClockwise },
@@ -60,30 +61,48 @@ export function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCo
 
   return (
     <aside className="flex h-full flex-col overflow-hidden bg-sidebar text-sidebar-foreground">
-      {/* Header — 45px, icons only, no title */}
+      {/* Header — 45px with traffic lights and toggle */}
       <div
-        className="flex shrink-0 items-center justify-end border-b border-border"
-        style={{ height: 45, padding: '12px 16px 12px 78px', WebkitAppRegion: 'drag' } as React.CSSProperties}
+        className="flex shrink-0 items-center justify-between border-b border-border"
+        style={{ height: 45, padding: '0 16px', WebkitAppRegion: 'drag' } as React.CSSProperties}
         data-tauri-drag-region
       >
+        {/* Traffic lights */}
         <div className="flex items-center gap-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-          <button
-            className="flex items-center justify-center border-none bg-transparent p-0 text-muted-foreground"
-            style={{ opacity: 0.4, cursor: 'not-allowed', pointerEvents: 'none' }}
-            title="Coming soon"
-            tabIndex={-1}
-          >
-            <MagnifyingGlass size={16} />
-          </button>
-          <button
-            className="flex items-center justify-center border-none bg-transparent p-0 text-muted-foreground"
-            style={{ opacity: 0.4, cursor: 'not-allowed', pointerEvents: 'none' }}
-            title="Coming soon"
-            tabIndex={-1}
-          >
-            <Gear size={16} />
-          </button>
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: '#FF5F57',
+            }}
+          />
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: '#FEBC2E',
+            }}
+          />
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: '#28C840',
+            }}
+          />
         </div>
+
+        {/* Sidebar toggle */}
+        <button
+          className="flex items-center justify-center border-none bg-transparent p-0 text-muted-foreground"
+          style={{ WebkitAppRegion: 'no-drag', cursor: 'pointer' } as React.CSSProperties}
+          title="Toggle sidebar"
+        >
+          <SidebarSimple size={16} />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -108,7 +127,7 @@ export function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCo
                 <span className="flex-1 text-[13px] font-medium">{label}</span>
                 {count > 0 && (
                   <span
-                    className="flex items-center justify-center bg-secondary text-muted-foreground"
+                    className="flex items-center justify-center bg-primary text-primary-foreground"
                     style={{ height: 20, borderRadius: 9999, padding: '0 6px', fontSize: 10 }}
                   >
                     {count}
@@ -172,7 +191,7 @@ export function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCo
                   <span className="text-[13px] font-semibold">{label}</span>
                 </div>
                 <span
-                  className="flex items-center justify-center bg-secondary text-muted-foreground"
+                  className="flex items-center justify-center bg-primary text-primary-foreground"
                   style={{ height: 20, borderRadius: 9999, padding: '0 6px', fontSize: 10 }}
                 >
                   {items.length}
@@ -191,7 +210,7 @@ export function Sidebar({ entries, selection, onSelect, onSelectNote, modifiedCo
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-accent hover:text-foreground"
                       )}
-                      style={{ padding: '4px 16px 4px 52px' }}
+                      style={{ padding: '4px 16px 4px 28px' }}
                       onClick={() => {
                         onSelect(isTopic ? { kind: 'topic', entry } : { kind: 'entity', entry })
                         onSelectNote?.(entry)
