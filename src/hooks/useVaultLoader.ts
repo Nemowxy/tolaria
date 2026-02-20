@@ -20,7 +20,7 @@ export function useVaultLoader(vaultPath: string) {
           result = await invoke<VaultEntry[]>('list_vault', { path: vaultPath })
         } else {
           console.info('[mock] Using mock Tauri data for browser testing')
-          result = await mockInvoke<VaultEntry[]>('list_vault', {})
+          result = await mockInvoke<VaultEntry[]>('list_vault', { path: vaultPath })
         }
         console.log(`Vault scan complete: ${result.length} entries found`)
         setEntries(result)
@@ -29,7 +29,7 @@ export function useVaultLoader(vaultPath: string) {
         if (isTauri()) {
           content = {}
         } else {
-          content = await mockInvoke<Record<string, string>>('get_all_content', {})
+          content = await mockInvoke<Record<string, string>>('get_all_content', { path: vaultPath })
         }
         setAllContent(content)
       } catch (err) {

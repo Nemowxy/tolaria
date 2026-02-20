@@ -6,6 +6,21 @@
 
 import type { VaultEntry, GitCommit, ModifiedFile } from './types'
 
+// --- Vault API detection (for reading real files in browser dev mode) ---
+let vaultApiAvailable: boolean | null = null
+
+async function checkVaultApi(): Promise<boolean> {
+  if (vaultApiAvailable !== null) return vaultApiAvailable
+  try {
+    const res = await fetch('/api/vault/ping', { signal: AbortSignal.timeout(500) })
+    vaultApiAvailable = res.ok
+  } catch {
+    vaultApiAvailable = false
+  }
+  console.info(`[mock-tauri] Vault API available: ${vaultApiAvailable}`)
+  return vaultApiAvailable
+}
+
 const MOCK_CONTENT: Record<string, string> = {
   '/Users/luca/Laputa/project/26q1-laputa-app.md': `---
 title: Build Laputa App
@@ -845,9 +860,33 @@ export function updateMockContent(path: string, content: string) {
 }
 
 export async function mockInvoke<T>(cmd: string, args?: any): Promise<T> {
+  // Try the vault API first for commands that read vault data
+  const apiAvailable = await checkVaultApi()
+  if (apiAvailable) {
+    try {
+      if (cmd === 'list_vault' && args?.path) {
+        const res = await fetch(`/api/vault/list?path=${encodeURIComponent(args.path)}`)
+        if (res.ok) return (await res.json()) as T
+      }
+      if (cmd === 'get_note_content' && args?.path) {
+        const res = await fetch(`/api/vault/content?path=${encodeURIComponent(args.path)}`)
+        if (res.ok) {
+          const { content } = await res.json()
+          return content as T
+        }
+      }
+      if (cmd === 'get_all_content' && args?.path) {
+        const res = await fetch(`/api/vault/all-content?path=${encodeURIComponent(args.path)}`)
+        if (res.ok) return (await res.json()) as T
+      }
+    } catch (err) {
+      console.warn(`[mock-tauri] Vault API call failed for ${cmd}, falling back to mock:`, err)
+    }
+  }
+
+  // Fall back to hardcoded mock handlers
   const handler = mockHandlers[cmd]
   if (handler) {
-    // Simulate async delay
     await new Promise((r) => setTimeout(r, 100))
     return handler(args) as T
   }
