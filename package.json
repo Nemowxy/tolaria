@@ -17,8 +17,7 @@
     "playwright:smoke": "playwright test --config playwright.smoke.config.ts tests/smoke/example.spec.ts tests/smoke/fix-ai-chat-empty-body-v3.spec.ts tests/smoke/fix-crash-create-note.spec.ts tests/smoke/fresh-start-telemetry-onboarding.spec.ts tests/smoke/getting-started-template.spec.ts tests/smoke/h1-title-decoupled.spec.ts tests/smoke/h1-untitled-auto-rename.spec.ts tests/smoke/keyboard-command-routing.spec.ts tests/smoke/linkify-init-warnings.spec.ts tests/smoke/multi-selection-shortcuts.spec.ts tests/smoke/wikilink-path-fix.spec.ts",
     "playwright:regression": "playwright test tests/smoke/",
     "playwright:integration": "playwright test --config playwright.integration.config.ts",
-    "test:coverage": "node scripts/run-vitest-coverage.mjs",
-    "prepare": "husky"
+    "test:coverage": "node scripts/run-vitest-coverage.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
@@ -93,7 +92,6 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "gray-matter": "^4.0.3",
-    "husky": "^9.1.7",
     "jsdom": "^28.0.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
