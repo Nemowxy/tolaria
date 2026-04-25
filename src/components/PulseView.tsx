@@ -9,6 +9,7 @@ import {
   Plus, Minus, PencilSimple, GitCommit, ArrowSquareOut,
   FileText, CaretDown, CaretRight, Pulse,
 } from '@phosphor-icons/react'
+import { useTranslation } from 'react-i18next'
 
 function tauriCall<T>(command: string, args: Record<string, unknown>): Promise<T> {
   return isTauri() ? invoke<T>(command, args) : mockInvoke<T>(command, args)
@@ -47,9 +48,9 @@ function isYesterday(dateKey: string): boolean {
   return dateKey === yesterday
 }
 
-function formatDayLabel(dateKey: string): string {
-  if (isToday(dateKey)) return 'Today'
-  if (isYesterday(dateKey)) return 'Yesterday'
+function formatDayLabel(dateKey: string, t: (key: string) => string): string {
+  if (isToday(dateKey)) return t('pulse.today')
+  if (isYesterday(dateKey)) return t('pulse.yesterday')
   return dateKey
 }
 
@@ -129,6 +130,7 @@ function CommitCard({
   commit: PulseCommit
   onOpenNote?: (path: string, commitHash?: string) => void
 }) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
   const Chevron = expanded ? CaretDown : CaretRight
   const toggleExpanded = useCallback(() => setExpanded((value) => !value), [])
@@ -173,7 +175,7 @@ function CommitCard({
                     window.open(commit.githubUrl!, '_blank')
                   }
                 }}
-                title="Open on GitHub"
+                title={t('pulse.openOnGitHub')}
               >
                 {commit.shortHash}
                 <ArrowSquareOut size={10} />
@@ -192,7 +194,7 @@ function CommitCard({
             event.stopPropagation()
             toggleExpanded()
           }}
-          aria-label={expanded ? 'Collapse files' : 'Expand files'}
+          aria-label={expanded ? t('pulse.collapseFiles') : t('pulse.expandFiles')}
         >
           <Chevron size={12} />
         </button>
@@ -213,6 +215,7 @@ function DayGroup({ label, commits, onOpenNote }: {
   commits: PulseCommit[]
   onOpenNote?: (path: string, commitHash?: string) => void
 }) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
   const Chevron = collapsed ? CaretRight : CaretDown
   const toggleCollapsed = useCallback(() => setCollapsed((value) => !value), [])
@@ -236,7 +239,7 @@ function DayGroup({ label, commits, onOpenNote }: {
           {label}
         </span>
         <span className="text-[11px] text-muted-foreground">
-          ({commits.length} {commits.length === 1 ? 'commit' : 'commits'})
+          ({t('pulse.commitCount', { count: commits.length })})
         </span>
       </div>
       {!collapsed && commits.map((commit) => (
@@ -250,6 +253,7 @@ function PulseHeader({
   sidebarCollapsed,
   onExpandSidebar,
 }: Pick<PulseViewProps, 'sidebarCollapsed' | 'onExpandSidebar'>) {
+  const { t } = useTranslation()
   const { onMouseDown } = useDragRegion()
 
   return (
@@ -266,31 +270,33 @@ function PulseHeader({
             className="flex shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent p-0 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             style={{ width: 24, height: 24 }}
             onClick={onExpandSidebar}
-            aria-label="Expand sidebar"
+            aria-label={t('pulse.expandSidebar')}
           >
             <CaretRight size={14} weight="bold" />
           </button>
         )}
         <Pulse size={16} className="text-primary" />
-        <span className="text-[14px] font-semibold text-foreground">History</span>
+        <span className="text-[14px] font-semibold text-foreground">{t('pulse.historyTitle')}</span>
       </div>
     </div>
   )
 }
 
 function EmptyState() {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-1 flex-col items-center justify-center text-muted-foreground" style={{ padding: 32 }}>
       <Pulse size={32} style={{ marginBottom: 8, opacity: 0.5 }} />
-      <p className="text-[13px]">No activity yet</p>
+      <p className="text-[13px]">{t('pulse.noActivityYet')}</p>
       <p className="text-[12px]" style={{ marginTop: 4 }}>
-        Commit changes to see your vault's history
+        {t('pulse.commitToSeeHistory')}
       </p>
     </div>
   )
 }
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-1 flex-col items-center justify-center text-muted-foreground" style={{ padding: 32 }}>
       <p className="text-[13px]">{message}</p>
@@ -298,7 +304,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
         className="mt-2 cursor-pointer rounded border border-border bg-transparent px-3 py-1 text-[12px] text-foreground transition-colors hover:bg-accent"
         onClick={onRetry}
       >
-        Retry
+        {t('pulse.retry')}
       </button>
     </div>
   )
@@ -323,10 +329,11 @@ function PulseFeed({
   onRetry: () => void
   sentinelRef: React.RefObject<HTMLDivElement | null>
 }) {
+  const { t } = useTranslation()
   if (loading) {
     return (
       <div className="flex items-center justify-center" style={{ padding: 32 }}>
-        <span className="text-[13px] text-muted-foreground">Loading activity…</span>
+        <span className="text-[13px] text-muted-foreground">{t('pulse.loadingActivity')}</span>
       </div>
     )
   }
@@ -344,7 +351,7 @@ function PulseFeed({
       {Array.from(dayGroups.entries()).map(([day, dayCommits]) => (
         <DayGroup
           key={day}
-          label={formatDayLabel(day)}
+          label={formatDayLabel(day, t)}
           commits={dayCommits}
           onOpenNote={onOpenNote}
         />
@@ -352,7 +359,7 @@ function PulseFeed({
       <div ref={sentinelRef} style={{ height: 1 }} />
       {loadingMore && (
         <div className="flex items-center justify-center" style={{ padding: 12 }}>
-          <span className="text-[12px] text-muted-foreground">Loading…</span>
+          <span className="text-[12px] text-muted-foreground">{t('pulse.loading')}</span>
         </div>
       )}
     </>

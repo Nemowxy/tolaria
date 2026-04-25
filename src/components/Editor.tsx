@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback, memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useEditorTabSwap } from '../hooks/useEditorTabSwap'
 import { useCreateBlockNote } from '@blocknote/react'
 import '@blocknote/mantine/style.css'
@@ -126,6 +127,7 @@ function useEditorModeExclusion({
 }
 
 function EditorEmptyState() {
+  const { t } = useTranslation()
   const breadcrumbBarHeight = 52
   const { onMouseDown } = useDragRegion()
   const quickOpenShortcut = formatShortcutDisplay({ display: '⌘P / ⌘O' })
@@ -142,8 +144,8 @@ function EditorEmptyState() {
         style={{ height: breadcrumbBarHeight }}
       />
       <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center text-muted-foreground">
-        <p className="m-0 text-[15px]">Select a note to start editing</p>
-        <span className="text-xs text-muted-foreground">{quickOpenShortcut} to search &middot; {newNoteShortcut} to create</span>
+        <p className="m-0 text-[15px]">{t('editor.selectNote')}</p>
+        <span className="text-xs text-muted-foreground">{t('editor.quickOpenHint', { quickOpen: quickOpenShortcut, newNote: newNoteShortcut })}</span>
       </div>
     </div>
   )

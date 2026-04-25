@@ -1,4 +1,5 @@
 import { useMemo, useCallback, useState, useRef, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { VaultEntry } from '../../types'
 import { Plus, X } from '@phosphor-icons/react'
 import type { ParsedFrontmatter } from '../../utils/frontmatter'
@@ -218,6 +219,7 @@ function CreateAndOpenOption({ title, selected, onClick, onHover }: {
   onClick: () => void
   onHover: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <div
       className={`flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm transition-colors ${selected ? 'bg-accent' : 'hover:bg-secondary'}`}
@@ -228,7 +230,7 @@ function CreateAndOpenOption({ title, selected, onClick, onHover }: {
     >
       <Plus size={14} className="shrink-0 text-muted-foreground" />
       <span className="truncate text-foreground">
-        Create &amp; open <strong>{title}</strong>
+        {t('inspector.createAndOpen')} <strong>{title}</strong>
       </span>
     </div>
   )
@@ -364,6 +366,7 @@ function InlineAddNote({ entries, vaultPath, onAdd, onCreateAndOpenNote }: {
   onAdd: (ref: string) => void
   onCreateAndOpenNote?: (title: string) => Promise<boolean>
 }) {
+  const { t } = useTranslation()
   const {
     active,
     setActive,
@@ -386,7 +389,7 @@ function InlineAddNote({ entries, vaultPath, onAdd, onCreateAndOpenNote }: {
         onClick={() => setActive(true)}
         data-testid="add-relation-ref"
       >
-        Add
+        {t('inspector.add')}
       </button>
     )
   }
@@ -399,7 +402,7 @@ function InlineAddNote({ entries, vaultPath, onAdd, onCreateAndOpenNote }: {
           autoFocus
           className="w-full border border-border bg-transparent text-foreground"
           style={{ borderRadius: 6, outline: 'none', minWidth: 0, padding: '6px 10px', fontSize: 12 }}
-          placeholder="Note title"
+          placeholder={t('inspector.noteTitlePlaceholder')}
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -481,6 +484,7 @@ function NoteTargetInput({ entries, value, onChange, onSubmit, onCancel, onCreat
   onCreateAndOpenNote?: (title: string) => Promise<boolean>
   onSubmitWithCreate?: (title: string) => void
 }) {
+  const { t } = useTranslation()
   const [focused, setFocused] = useState(false)
   const search = useNoteSearch(entries, value, 8)
 
@@ -527,7 +531,7 @@ function NoteTargetInput({ entries, value, onChange, onSubmit, onCancel, onCreat
       <input
         className="w-full border border-border bg-transparent px-2 py-1 text-xs text-foreground"
         style={{ borderRadius: 4, outline: 'none' }}
-        placeholder="Note title"
+        placeholder={t('inspector.noteTitlePlaceholder')}
         value={value}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
@@ -627,6 +631,7 @@ function AddRelationshipForm({ entries, vaultPath, onAddProperty, onCreateAndOpe
   onAddProperty: (key: string, value: FrontmatterValue) => void
   onCreateAndOpenNote?: (title: string) => Promise<boolean>
 }) {
+  const { t } = useTranslation()
   const [relKey, setRelKey] = useState('')
   const [relTarget, setRelTarget] = useState('')
   const [showForm, setShowForm] = useState(false)
@@ -653,7 +658,7 @@ function AddRelationshipForm({ entries, vaultPath, onAddProperty, onCreateAndOpe
 
   if (!showForm) {
     return (
-      <button className="mt-2 w-full border border-border bg-transparent text-center text-muted-foreground" style={{ borderRadius: 6, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }} onClick={() => { setShowForm(true); setTimeout(() => keyInputRef.current?.focus(), 0) }}>+ Add relationship</button>
+      <button className="mt-2 w-full border border-border bg-transparent text-center text-muted-foreground" style={{ borderRadius: 6, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }} onClick={() => { setShowForm(true); setTimeout(() => keyInputRef.current?.focus(), 0) }}>{t('inspector.addRelationship')}</button>
     )
   }
 
@@ -664,7 +669,7 @@ function AddRelationshipForm({ entries, vaultPath, onAddProperty, onCreateAndOpe
         autoFocus
         className="w-full border border-border bg-transparent px-2 py-1 text-xs text-foreground"
         style={{ borderRadius: 4, outline: 'none' }}
-        placeholder="Relationship name"
+        placeholder={t('inspector.relationshipNamePlaceholder')}
         value={relKey}
         onChange={e => setRelKey(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') submitForm(); else if (e.key === 'Escape') resetForm() }}
@@ -679,8 +684,8 @@ function AddRelationshipForm({ entries, vaultPath, onAddProperty, onCreateAndOpe
         onSubmitWithCreate={handleCreateAndSubmit}
       />
       <div className="flex gap-1.5">
-        <button className="flex-1 border border-border bg-transparent text-xs text-foreground" style={{ borderRadius: 4, padding: '4px 0' }} onClick={() => submitForm()} disabled={!relKey.trim() || !relTarget.trim()} data-testid="submit-add-relationship">Add</button>
-        <button className="border border-border bg-transparent text-xs text-muted-foreground" style={{ borderRadius: 4, padding: '4px 8px' }} onClick={resetForm}>Cancel</button>
+        <button className="flex-1 border border-border bg-transparent text-xs text-foreground" style={{ borderRadius: 4, padding: '4px 0' }} onClick={() => submitForm()} disabled={!relKey.trim() || !relTarget.trim()} data-testid="submit-add-relationship">{t('inspector.add')}</button>
+        <button className="border border-border bg-transparent text-xs text-muted-foreground" style={{ borderRadius: 4, padding: '4px 8px' }} onClick={resetForm}>{t('inspector.cancel')}</button>
       </div>
     </div>
   )
@@ -699,8 +704,9 @@ function updateRefsForAddition(refs: string[], refToAdd: string): FrontmatterVal
 }
 
 function DisabledLinkButton() {
+  const { t } = useTranslation()
   return (
-    <button className="mt-2 w-full border border-border bg-transparent text-center text-muted-foreground" style={{ borderRadius: 6, padding: '6px 12px', fontSize: 12, opacity: 0.5, cursor: 'not-allowed' }} disabled>+ Add relationship</button>
+    <button className="mt-2 w-full border border-border bg-transparent text-center text-muted-foreground" style={{ borderRadius: 6, padding: '6px 12px', fontSize: 12, opacity: 0.5, cursor: 'not-allowed' }} disabled>{t('inspector.addRelationship')}</button>
   )
 }
 

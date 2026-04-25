@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useState, useMemo, useCallback, useEffect, useId, useRef, type KeyboardEvent, type RefObject } from 'react'
 import { SlidersHorizontal, DotsSixVertical } from '@phosphor-icons/react'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
@@ -77,6 +78,7 @@ function reorderDisplayProperties(event: DragEndEvent, currentDisplay: NoteListP
 }
 
 function SortablePropertyItem({ id, checked, onToggle }: { id: NoteListPropertyKey; checked: boolean; onToggle: (key: NoteListPropertyKey) => void }) {
+  const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
   const style = { transform: CSS.Transform.toString(transform), transition }
   const inputId = propertyInputId(id)
@@ -110,7 +112,7 @@ function SortablePropertyItem({ id, checked, onToggle }: { id: NoteListPropertyK
         variant="ghost"
         size="icon-xs"
         className="shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing"
-        aria-label={`Reorder ${id}`}
+        aria-label={t('listProperties.reorderAriaLabel', { property: id })}
         {...dragAttributes}
         {...listeners}
       >
@@ -135,6 +137,7 @@ function ListPropertiesSearchInput({
   onQueryChange: (value: string) => void
   onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void
 }) {
+  const { t } = useTranslation()
   return (
     <div className="mb-2">
       <Input
@@ -142,12 +145,12 @@ function ListPropertiesSearchInput({
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
         onKeyDown={onKeyDown}
-        placeholder="Search properties..."
+        placeholder={t('listProperties.searchPlaceholder')}
         role="combobox"
         aria-autocomplete="list"
         aria-controls={listboxId}
         aria-expanded={open}
-        aria-label="Search note-list properties"
+        aria-label={t('listProperties.searchAriaLabel')}
         className="h-8 text-[13px]"
         data-testid="list-properties-combobox-input"
       />
@@ -170,11 +173,12 @@ function ListPropertiesOptionsList({
   onDragEnd: (event: DragEndEvent) => void
   onToggle: (key: string) => void
 }) {
+  const { t } = useTranslation()
   return (
     <div className="max-h-60 overflow-y-auto" data-testid="list-properties-scroll-area">
       {filteredItems.length === 0 ? (
         <div className="px-1 py-2 text-[12px] text-muted-foreground">
-          No properties match this search.
+          {t('listProperties.noMatch')}
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
@@ -223,6 +227,7 @@ function ListPropertiesPopoverPanel({
   onDragEnd: (event: DragEndEvent) => void
   onToggle: (key: string) => void
 }) {
+  const { t } = useTranslation()
   return (
     <PopoverContent
       align="end"
@@ -232,7 +237,7 @@ function ListPropertiesPopoverPanel({
     >
       <div onKeyDownCapture={onPanelKeyDown}>
         <div className="mb-2 px-1 text-[11px] font-medium text-muted-foreground">
-          Show in note list
+          {t('listProperties.showInList')}
         </div>
         <ListPropertiesSearchInput
           inputRef={inputRef}

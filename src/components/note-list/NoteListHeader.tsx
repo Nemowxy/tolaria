@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
 import { Loader2 } from 'lucide-react'
 import type { VaultEntry } from '../../types'
@@ -30,6 +31,7 @@ export function NoteListHeader({ title, typeDocument, isEntityView, listSort, li
   onSearchChange: (value: string) => void
   onSearchKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }) {
+  const { t } = useTranslation()
   const { onMouseDown: onDragMouseDown } = useDragRegion()
   return (
     <>
@@ -44,11 +46,11 @@ export function NoteListHeader({ title, typeDocument, isEntityView, listSort, li
         </h3>
         <div className="ml-3 flex shrink-0 items-center justify-end gap-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
           {!isEntityView && <SortDropdown groupLabel="__list__" current={listSort} direction={listDirection} customProperties={customProperties} onChange={onSortChange} />}
-          <Button type="button" variant="ghost" size="icon-xs" className={NOTE_LIST_ACTION_BUTTON_CLASSNAME} onClick={onToggleSearch} title="Search notes" aria-label="Search notes">
+          <Button type="button" variant="ghost" size="icon-xs" className={NOTE_LIST_ACTION_BUTTON_CLASSNAME} onClick={onToggleSearch} title={t('noteList.searchNotes')} aria-label={t('noteList.searchNotesAria')}>
             <MagnifyingGlass size={16} />
           </Button>
           {propertyPicker && <ListPropertiesPopover {...propertyPicker} triggerClassName={NOTE_LIST_ACTION_BUTTON_CLASSNAME} />}
-          <Button type="button" variant="ghost" size="icon-xs" className={NOTE_LIST_ACTION_BUTTON_CLASSNAME} onClick={onCreateNote} title="Create new note" aria-label="Create new note">
+          <Button type="button" variant="ghost" size="icon-xs" className={NOTE_LIST_ACTION_BUTTON_CLASSNAME} onClick={onCreateNote} title={t('noteList.createNote')} aria-label={t('noteList.createNoteAria')}>
             <Plus size={16} />
           </Button>
         </div>
@@ -58,7 +60,7 @@ export function NoteListHeader({ title, typeDocument, isEntityView, listSort, li
           <div className="relative flex-1" aria-live="polite">
             <Input
               ref={searchInputRef}
-              placeholder="Search notes..."
+              placeholder={t('noteList.searchPlaceholder')}
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               onKeyDown={onSearchKeyDown}

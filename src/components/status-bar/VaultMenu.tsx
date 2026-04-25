@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 import { AlertTriangle, Check, FolderOpen, GitBranch, Plus, Rocket, X } from 'lucide-react'
 import { ActionTooltip } from '@/components/ui/action-tooltip'
 import { Button } from '@/components/ui/button'
@@ -54,7 +56,7 @@ function buildVaultActions({
     items.push({
       key: 'create-empty',
       icon: <Plus size={12} />,
-      label: 'Create empty vault',
+      label: i18next.t('vaultMenu.createEmptyVault'),
       testId: 'vault-menu-create-empty',
       accent: true,
       onClick: onCreateEmptyVault,
@@ -65,7 +67,7 @@ function buildVaultActions({
     items.push({
       key: 'open-local',
       icon: <FolderOpen size={12} />,
-      label: 'Open local folder',
+      label: i18next.t('vaultMenu.openLocalFolder'),
       testId: 'vault-menu-open-local',
       onClick: onOpenLocalFolder,
     })
@@ -75,7 +77,7 @@ function buildVaultActions({
     items.push({
       key: 'clone-git',
       icon: <GitBranch size={12} />,
-      label: 'Clone Git repo',
+      label: i18next.t('vaultMenu.cloneGitRepo'),
       testId: 'vault-menu-clone-git',
       onClick: onCloneVault,
     })
@@ -85,7 +87,7 @@ function buildVaultActions({
     items.push({
       key: 'clone-getting-started',
       icon: <Rocket size={12} />,
-      label: 'Clone Getting Started Vault',
+      label: i18next.t('vaultMenu.cloneGettingStarted'),
       testId: 'vault-menu-clone-getting-started',
       accent: true,
       onClick: onCloneGettingStarted,
@@ -102,8 +104,9 @@ function VaultMenuIcon({ isActive, unavailable }: { isActive: boolean; unavailab
 }
 
 function VaultMenuItem({ vault, isActive, canRemove, onSelect, onRemove }: VaultMenuItemProps) {
+  const { t } = useTranslation()
   const unavailable = vault.available === false
-  const removeLabel = `Remove ${vault.label} from list`
+  const removeLabel = t('vaultMenu.removeVault', { label: vault.label })
   const itemClassName = [
     'w-full justify-start rounded-sm px-2 py-1 text-xs font-normal',
     canRemove ? 'pr-7' : '',
@@ -121,7 +124,7 @@ function VaultMenuItem({ vault, isActive, canRemove, onSelect, onRemove }: Vault
         disabled={unavailable}
         onClick={onSelect}
         aria-current={isActive ? 'true' : undefined}
-        title={unavailable ? `Vault not found: ${vault.path}` : vault.path}
+        title={unavailable ? t('vaultMenu.vaultNotFound', { path: vault.path }) : vault.path}
         data-testid={`vault-menu-item-${vault.label}`}
         className={itemClassName}
         style={{
@@ -183,6 +186,7 @@ export function VaultMenu({
   onCloneGettingStarted,
   onRemoveVault,
 }: VaultMenuProps) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const activeVault = vaults.find((vault) => vault.path === vaultPath)
@@ -201,7 +205,7 @@ export function VaultMenu({
 
   return (
     <div ref={menuRef} style={{ position: 'relative' }}>
-      <ActionTooltip copy={{ label: 'Switch vault' }} side="top">
+      <ActionTooltip copy={{ label: t('vaultMenu.switchVault') }} side="top">
         <Button
           type="button"
           variant="ghost"
@@ -210,11 +214,11 @@ export function VaultMenu({
             ? 'h-auto gap-1 rounded-sm bg-[var(--hover)] px-1 py-0.5 text-[11px] font-medium text-foreground hover:bg-[var(--hover)]'
             : 'h-auto gap-1 rounded-sm px-1 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-[var(--hover)] hover:text-foreground'}
           onClick={() => setOpen((value) => !value)}
-          aria-label="Switch vault"
+          aria-label={t('vaultMenu.switchVaultAria')}
           data-testid="status-vault-trigger"
         >
           <FolderOpen size={13} />
-          {activeVault?.label ?? 'Vault'}
+          {activeVault?.label ?? t('vaultMenu.vaultLabel')}
         </Button>
       </ActionTooltip>
       {open && (

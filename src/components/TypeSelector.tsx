@@ -1,5 +1,6 @@
 import { CaretUpDown, Check, StackSimple, WarningCircle } from '@phosphor-icons/react'
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { FrontmatterValue } from './Inspector'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,7 +20,6 @@ import {
 const TYPE_NONE = '__none__'
 const MIN_POPOVER_WIDTH = 220
 const OPEN_COMBOBOX_KEYS = new Set(['ArrowDown', 'ArrowUp', 'Enter', ' '])
-const MISSING_TYPE_TOOLTIP = 'Missing type'
 
 interface TypeSelectorItemProps {
   type: string
@@ -90,7 +90,9 @@ function TypeSelectorValue({
   typeColorKeys: Record<string, string | null>
   typeIconKeys: Record<string, string | null>
 }) {
-  if (!isA) return <span className="truncate text-muted-foreground">None</span>
+  const { t } = useTranslation()
+
+  if (!isA) return <span className="truncate text-muted-foreground">{t('inspector.typeNone')}</span>
 
   return (
     <span className="flex min-w-0 items-center gap-1">
@@ -100,6 +102,8 @@ function TypeSelectorValue({
 }
 
 function TypeRowLabel() {
+  const { t } = useTranslation()
+
   return (
     <span className={PROPERTY_PANEL_LABEL_CLASS_NAME}>
       <span
@@ -108,7 +112,7 @@ function TypeRowLabel() {
       >
         <StackSimple size={14} className="shrink-0" data-testid="type-row-icon" />
       </span>
-      <span className="min-w-0 truncate">Type</span>
+      <span className="min-w-0 truncate">{t('inspector.typeLabel')}</span>
     </span>
   )
 }
@@ -120,6 +124,7 @@ function MissingTypeWarning({
   missingTypeName: string
   onCreateMissingType?: (typeName: string) => boolean | void | Promise<boolean | void>
 }) {
+  const { t } = useTranslation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const canCreateMissingType = Boolean(onCreateMissingType)
 
@@ -136,13 +141,13 @@ function MissingTypeWarning({
               !canCreateMissingType && 'cursor-default',
             )}
             data-testid="missing-type-warning"
-            aria-label={`Missing type ${missingTypeName}. Click to create this type.`}
+            aria-label={t('inspector.missingTypeAria', { name: missingTypeName })}
             onClick={canCreateMissingType ? () => setDialogOpen(true) : undefined}
           >
             <WarningCircle size={14} weight="fill" aria-hidden="true" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>{MISSING_TYPE_TOOLTIP}</TooltipContent>
+        <TooltipContent>{t('inspector.missingType')}</TooltipContent>
       </Tooltip>
       {canCreateMissingType && (
         <CreateTypeDialog
@@ -259,6 +264,7 @@ function EditableTypeSelector({
 }: Omit<TypeSelectorProps, 'onUpdateProperty'> & {
   onUpdateProperty: (key: string, value: FrontmatterValue) => void
 }) {
+  const { t } = useTranslation()
   const currentValue = isA ?? TYPE_NONE
   const typeColor = isA ? getTypeColor(isA, typeColorKeys[isA] ?? customColorKey) : undefined
   const typeLightColor = isA ? getTypeLightColor(isA, typeColorKeys[isA] ?? customColorKey) : undefined
@@ -424,9 +430,9 @@ function EditableTypeSelector({
               <Input
                 ref={inputRef}
                 value={query}
-                placeholder="Search types..."
+                placeholder={t('inspector.searchTypes')}
                 autoComplete="off"
-                aria-label="Search types"
+                aria-label={t('inspector.searchTypesAria')}
                 className="h-8 text-sm"
                 data-testid="type-selector-search-input"
                 onChange={(event) => handleSearchChange(event.target.value)}
@@ -436,7 +442,7 @@ function EditableTypeSelector({
             <div ref={listRef} className="max-h-60 overflow-y-auto p-1">
               {options.length === 0 ? (
                 <div className="px-2 py-6 text-center text-sm text-muted-foreground">
-                  No matching types
+                  {t('inspector.noMatchingTypes')}
                 </div>
               ) : (
                 <div id={listboxId} role="listbox">
@@ -460,7 +466,7 @@ function EditableTypeSelector({
                         onClick={() => selectType(type)}
                       >
                         {type === TYPE_NONE ? (
-                          <span className="truncate text-muted-foreground">None</span>
+                          <span className="truncate text-muted-foreground">{t('inspector.typeNone')}</span>
                         ) : (
                           <span className="flex min-w-0 items-center gap-2 truncate">
                             <TypeSelectorItem type={type} typeColorKeys={typeColorKeys} typeIconKeys={typeIconKeys} />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   type Dispatch, type Ref, type RefObject, type SetStateAction,
 } from 'react'
@@ -60,9 +61,10 @@ export function ViewsSection({
   onDeleteView?: (filename: string) => void
   entries: VaultEntry[]
 }) {
+  const { t } = useTranslation()
   return (
     <div className="border-b border-border" style={{ padding: '0 6px' }}>
-      <SidebarGroupHeader label="VIEWS" collapsed={collapsed} onToggle={onToggle}>
+      <SidebarGroupHeader label={t('sidebarSections.views')} collapsed={collapsed} onToggle={onToggle}>
         {onCreateView && (
           <Plus
             size={12}
@@ -170,6 +172,7 @@ export function TypesSection({
   onCreateNewType?: () => void
   customizeRef: RefObject<HTMLDivElement | null>
 }) {
+  const { t } = useTranslation()
   return (
     <div className="border-b border-border">
       <div ref={customizeRef} style={{ position: 'relative', padding: '0 6px' }}>
@@ -179,8 +182,8 @@ export function TypesSection({
               type="button"
               variant="ghost"
               size="icon-xs"
-              title="Customize sections"
-              aria-label="Customize sections"
+              title={t('sidebarSections.customizeSections')}
+              aria-label={t('sidebarSections.customizeSectionsAria')}
               className="h-auto w-auto min-w-0 rounded-none p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
               onClick={(event) => { event.stopPropagation(); setShowCustomize((value) => !value) }}
             >
@@ -193,8 +196,8 @@ export function TypesSection({
                 size="icon-xs"
                 className="h-auto w-auto min-w-0 rounded-none p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
                 data-testid="create-type-btn"
-                title="Create new type"
-                aria-label="Create new type"
+                title={t('sidebarSections.createType')}
+                aria-label={t('sidebarSections.createTypeAria')}
                 onClick={(event) => { event.stopPropagation(); onCreateNewType() }}
               >
                 <Plus size={12} className="text-muted-foreground hover:text-foreground" />
@@ -224,6 +227,7 @@ export function TypesSection({
 }
 
 export function SidebarTitleBar({ onCollapse }: { onCollapse?: () => void }) {
+  const { t } = useTranslation()
   const { onMouseDown } = useDragRegion()
 
   return (
@@ -237,8 +241,8 @@ export function SidebarTitleBar({ onCollapse }: { onCollapse?: () => void }) {
           className="flex shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent p-0 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           style={{ width: 24, height: 24 }}
           onClick={onCollapse}
-          aria-label="Collapse sidebar"
-          title="Collapse sidebar"
+          aria-label={t('sidebarSections.collapseSidebarAria')}
+          title={t('sidebarSections.collapseSidebar')}
         >
           <CaretLeft size={14} weight="bold" />
         </button>

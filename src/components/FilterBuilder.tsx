@@ -1,4 +1,5 @@
 import { Plus, X, WarningCircle } from '@phosphor-icons/react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -8,14 +9,14 @@ import { FilterFieldCombobox } from './FilterFieldCombobox'
 import { DateValueInput } from './filter-builder/DateValueInput'
 
 const OPERATORS: { value: FilterOp; label: string }[] = [
-  { value: 'equals', label: 'equals' },
-  { value: 'not_equals', label: 'does not equal' },
-  { value: 'contains', label: 'contains' },
-  { value: 'not_contains', label: 'does not contain' },
-  { value: 'is_empty', label: 'is empty' },
-  { value: 'is_not_empty', label: 'is not empty' },
-  { value: 'before', label: 'before' },
-  { value: 'after', label: 'after' },
+  { value: 'equals', label: 'opEquals' },
+  { value: 'not_equals', label: 'opNotEquals' },
+  { value: 'contains', label: 'opContains' },
+  { value: 'not_contains', label: 'opNotContains' },
+  { value: 'is_empty', label: 'opIsEmpty' },
+  { value: 'is_not_empty', label: 'opIsNotEmpty' },
+  { value: 'before', label: 'opBefore' },
+  { value: 'after', label: 'opAfter' },
 ]
 
 const NO_VALUE_OPS = new Set<FilterOp>(['is_empty', 'is_not_empty'])
@@ -60,6 +61,7 @@ function OperatorSelect({ value, onChange }: {
   value: FilterOp
   onChange: (v: FilterOp) => void
 }) {
+  const { t } = useTranslation()
   return (
     <Select value={value} onValueChange={(v) => onChange(v as FilterOp)}>
       <SelectTrigger
@@ -71,7 +73,7 @@ function OperatorSelect({ value, onChange }: {
       </SelectTrigger>
       <SelectContent position="popper">
         {OPERATORS.map((o) => (
-          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+          <SelectItem key={o.value} value={o.value}>{t(`filterBuilder.${o.label}`)}</SelectItem>
         ))}
       </SelectContent>
     </Select>
@@ -86,6 +88,7 @@ function TextValueInput({ value, onChange, regexEnabled, regexSupported, invalid
   invalidRegex: boolean
   onToggleRegex: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-1 min-w-0 items-center gap-1">
       <div className="relative min-w-0 flex-1">
@@ -94,7 +97,7 @@ function TextValueInput({ value, onChange, regexEnabled, regexSupported, invalid
             'h-8 w-full min-w-0 text-sm',
             invalidRegex && 'border-destructive pr-7 focus-visible:ring-destructive/20',
           )}
-          placeholder="value"
+          placeholder={t('filterBuilder.valuePlaceholder')}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           data-testid="filter-value-input"
@@ -121,7 +124,7 @@ function TextValueInput({ value, onChange, regexEnabled, regexSupported, invalid
           onClick={onToggleRegex}
           aria-pressed={regexEnabled}
           data-testid="filter-regex-toggle"
-          title="Treat value as regex"
+          title={t('filterBuilder.regexTooltip')}
         >
           .*
         </Button>
@@ -136,6 +139,7 @@ function FilterRow({ condition, fields, onUpdate, onRemove }: {
   onUpdate: (c: FilterCondition) => void
   onRemove: () => void
 }) {
+  const { t } = useTranslation()
   const isDateOp = DATE_OPS.has(condition.op)
   const regexSupported = supportsRegex(condition.op)
   const regexEnabled = regexSupported && condition.regex === true
@@ -171,7 +175,7 @@ function FilterRow({ condition, fields, onUpdate, onRemove }: {
         size="sm"
         className="h-8 w-8 shrink-0 p-0 text-muted-foreground hover:text-foreground"
         onClick={onRemove}
-        title="Remove filter"
+        title={t('filterBuilder.removeFilter')}
       >
         <X size={14} />
       </Button>
@@ -186,6 +190,7 @@ function FilterGroupView({ group, fields, depth, onChange, onRemove }: {
   onChange: (g: FilterGroup) => void
   onRemove?: () => void
 }) {
+  const { t } = useTranslation()
   const mode = getGroupMode(group)
   const children = getGroupChildren(group)
 
@@ -222,12 +227,12 @@ function FilterGroupView({ group, fields, depth, onChange, onRemove }: {
           size="sm"
           className="h-6 rounded-full px-2.5 text-[11px] font-medium"
           onClick={toggleMode}
-          title={`Switch to ${mode === 'all' ? 'OR' : 'AND'}`}
+          title={t('filterBuilder.switchMode', { mode: mode === 'all' ? 'OR' : 'AND' })}
         >
           {mode === 'all' ? 'AND' : 'OR'}
         </Button>
         <span className="text-[11px] text-muted-foreground">
-          {mode === 'all' ? 'Match all conditions' : 'Match any condition'}
+          {mode === 'all' ? t('filterBuilder.matchAll') : t('filterBuilder.matchAny')}
         </span>
         {onRemove && (
           <Button
@@ -236,7 +241,7 @@ function FilterGroupView({ group, fields, depth, onChange, onRemove }: {
             size="sm"
             className="ml-auto h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
             onClick={onRemove}
-            title="Remove group"
+            title={t('filterBuilder.removeGroup')}
           >
             <X size={12} />
           </Button>
@@ -266,10 +271,10 @@ function FilterGroupView({ group, fields, depth, onChange, onRemove }: {
       </div>
       <div className="flex gap-2 mt-2">
         <Button type="button" variant="ghost" size="sm" className="h-7 text-xs" onClick={addCondition}>
-          <Plus size={12} className="mr-1" /> Add filter
+          <Plus size={12} className="mr-1" /> {t('filterBuilder.addFilter')}
         </Button>
         <Button type="button" variant="ghost" size="sm" className="h-7 text-xs" onClick={addGroup}>
-          <Plus size={12} className="mr-1" /> Add group
+          <Plus size={12} className="mr-1" /> {t('filterBuilder.addGroup')}
         </Button>
       </div>
     </div>

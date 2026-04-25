@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { CaretRight, CaretDown, Brain, ArrowCounterClockwise } from '@phosphor-icons/react'
+import { useTranslation } from 'react-i18next'
 import { AiActionCard, type AiActionStatus } from './AiActionCard'
 import { MarkdownContent } from './MarkdownContent'
 import type { NoteReference } from '../utils/ai-context'
@@ -88,6 +89,7 @@ function UserBubble({ content, references, onOpenNote }: {
 function ReasoningBlock({ text, expanded, onToggle }: {
   text: string; expanded: boolean; onToggle: () => void
 }) {
+  const { t } = useTranslation()
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -105,7 +107,7 @@ function ReasoningBlock({ text, expanded, onToggle }: {
         data-testid="reasoning-toggle"
       >
         <Brain size={14} />
-        <span>Reasoning</span>
+        <span>{t('aiMessage.reasoning')}</span>
         {expanded ? <CaretDown size={12} /> : <CaretRight size={12} />}
       </button>
       {expanded && (
@@ -149,6 +151,7 @@ function ActionCardsList({ actions, onOpenNote, expandedIds, onToggleExpand }: {
 }
 
 function ResponseBlock({ text, onNavigateWikilink }: { text: string; onNavigateWikilink?: (target: string) => void }) {
+  const { t } = useTranslation()
   return (
     <div style={{ marginBottom: 4 }}>
       <MarkdownContent content={text} onWikilinkClick={onNavigateWikilink} />
@@ -158,7 +161,7 @@ function ResponseBlock({ text, onNavigateWikilink }: { text: string; onNavigateW
         data-testid="undo-button"
       >
         <ArrowCounterClockwise size={12} />
-        <span>Undo</span>
+        <span>{t('aiMessage.undo')}</span>
       </button>
     </div>
   )

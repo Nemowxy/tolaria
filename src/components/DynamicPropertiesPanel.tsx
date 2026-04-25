@@ -1,5 +1,6 @@
 import { Plus } from '@phosphor-icons/react'
 import { useMemo, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import type { VaultEntry } from '../types'
 import type { FrontmatterValue } from './Inspector'
@@ -41,6 +42,7 @@ function PropertyRow({ propKey, value, editingKey, displayMode, autoMode, vaultS
   onUpdate?: (key: string, value: FrontmatterValue) => void; onDelete?: (key: string) => void
   onDisplayModeChange: (key: string, mode: PropertyDisplayMode | null) => void
 }) {
+  const { t } = useTranslation()
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.target !== e.currentTarget) {
       return
@@ -57,7 +59,7 @@ function PropertyRow({ propKey, value, editingKey, displayMode, autoMode, vaultS
         <DisplayModeSelector propKey={propKey} currentMode={displayMode} autoMode={autoMode} onSelect={onDisplayModeChange} />
         <span className="min-w-0 flex-1 truncate">{humanizePropertyKey(propKey)}</span>
         {onDelete && (
-          <button className="border-none bg-transparent p-0 text-sm leading-none text-muted-foreground opacity-0 transition-all hover:text-destructive group-hover/prop:opacity-100" onClick={() => onDelete(propKey)} title="Delete property">&times;</button>
+          <button className="border-none bg-transparent p-0 text-sm leading-none text-muted-foreground opacity-0 transition-all hover:text-destructive group-hover/prop:opacity-100" onClick={() => onDelete(propKey)} title={t('inspector.deleteProperty')}>&times;</button>
         )}
       </span>
       <div className="min-w-0">
@@ -68,6 +70,8 @@ function PropertyRow({ propKey, value, editingKey, displayMode, autoMode, vaultS
 }
 
 function AddPropertyButton({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
+  const { t } = useTranslation()
+
   return (
     <Button
       type="button"
@@ -86,7 +90,7 @@ function AddPropertyButton({ onClick, disabled }: { onClick: () => void; disable
         >
           <Plus className="size-3.5" aria-hidden="true" />
         </span>
-        <span className="min-w-0 truncate">Add property</span>
+        <span className="min-w-0 truncate">{t('inspector.addProperty')}</span>
       </span>
       <span aria-hidden="true" className={PROPERTY_PANEL_PLACEHOLDER_VALUE_CLASS_NAME} />
     </Button>
@@ -94,10 +98,10 @@ function AddPropertyButton({ onClick, disabled }: { onClick: () => void; disable
 }
 
 const SUGGESTED_PROPERTIES = [
-  { key: 'Status', label: 'Status' },
-  { key: 'Date', label: 'Date' },
-  { key: 'URL', label: 'URL' },
-  { key: 'icon', label: 'Icon' },
+  { key: 'Status', labelKey: 'inspector.suggestedStatus' },
+  { key: 'Date', labelKey: 'inspector.suggestedDate' },
+  { key: 'URL', labelKey: 'inspector.suggestedUrl' },
+  { key: 'icon', labelKey: 'inspector.suggestedIcon' },
 ] as const
 
 const SUGGESTED_PROPERTY_MODES: Record<string, PropertyDisplayMode> = {
@@ -117,11 +121,12 @@ function resolveMissingTypeName(entryIsA: string | null | undefined, availableTy
   return availableTypes.includes(trimmed) ? null : trimmed
 }
 
-function SuggestedPropertySlot({ label, displayMode, onAdd }: {
-  label: string
+function SuggestedPropertySlot({ labelKey, displayMode, onAdd }: {
+  labelKey: string
   displayMode: PropertyDisplayMode
   onAdd: () => void
 }) {
+  const { t } = useTranslation()
   const SuggestedIcon = DISPLAY_MODE_ICONS[displayMode]
 
   return (
@@ -144,7 +149,7 @@ function SuggestedPropertySlot({ label, displayMode, onAdd }: {
             data-testid={`suggested-property-icon-${displayMode}`}
           />
         </span>
-        <span className="min-w-0 truncate">{label}</span>
+        <span className="min-w-0 truncate">{t(labelKey)}</span>
       </span>
       <span className={PROPERTY_PANEL_PLACEHOLDER_VALUE_CLASS_NAME}>{'\u2014'}</span>
     </Button>
@@ -310,10 +315,10 @@ export function DynamicPropertiesPanel({
             onDisplayModeChange={handleDisplayModeChange}
           />
         )}
-        {missingSuggested.map(({ key, label }) => (
+        {missingSuggested.map(({ key, labelKey }) => (
           <SuggestedPropertySlot
             key={key}
-            label={label}
+            labelKey={labelKey}
             displayMode={getSuggestedDisplayMode(key)}
             onAdd={() => handleSuggestedAdd(key)}
           />
