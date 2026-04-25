@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import i18next from '../i18n'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -7,7 +8,9 @@ interface DeleteProgressNoticeProps {
 }
 
 function describeNotes(count: number): string {
-  return count === 1 ? 'note' : `${count} notes`
+  return count === 1
+    ? i18next.t('deleteProgress.singleNote')
+    : i18next.t('deleteProgress.multipleNotes', { count })
 }
 
 export const DeleteProgressNotice = memo(function DeleteProgressNotice({
@@ -25,7 +28,7 @@ export const DeleteProgressNotice = memo(function DeleteProgressNotice({
       data-testid="delete-progress-notice"
     >
       <Loader2 size={14} className="animate-spin text-muted-foreground" />
-      <span>{`Deleting ${describeNotes(count)}...`}</span>
+      <span>{i18next.t('deleteProgress.deleting', { notes: describeNotes(count) })}</span>
     </div>
   )
 })

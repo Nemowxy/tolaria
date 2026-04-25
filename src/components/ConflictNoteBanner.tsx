@@ -1,4 +1,5 @@
 import { AlertTriangle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface ConflictNoteBannerProps {
   onKeepMine: () => void
@@ -6,6 +7,7 @@ interface ConflictNoteBannerProps {
 }
 
 export function ConflictNoteBanner({ onKeepMine, onKeepTheirs }: ConflictNoteBannerProps) {
+  const { t } = useTranslation()
   return (
     <div
       data-testid="conflict-note-banner"
@@ -22,7 +24,7 @@ export function ConflictNoteBanner({ onKeepMine, onKeepTheirs }: ConflictNoteBan
       }}
     >
       <AlertTriangle size={13} />
-      <span>This note has a merge conflict</span>
+      <span>{t('banner.conflictNote')}</span>
       <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
         <button
           data-testid="conflict-keep-mine-btn"
@@ -39,9 +41,9 @@ export function ConflictNoteBanner({ onKeepMine, onKeepTheirs }: ConflictNoteBan
             color: 'var(--foreground)',
             cursor: 'pointer',
           }}
-          title="Keep my local version"
+          title={t('banner.keepMineTitle')}
         >
-          Keep mine
+          {t('banner.keepMine')}
         </button>
         <button
           data-testid="conflict-keep-theirs-btn"
@@ -58,9 +60,9 @@ export function ConflictNoteBanner({ onKeepMine, onKeepTheirs }: ConflictNoteBan
             color: 'var(--foreground)',
             cursor: 'pointer',
           }}
-          title="Keep the remote version"
+          title={t('banner.keepTheirsTitle')}
         >
-          Keep theirs
+          {t('banner.keepTheirs')}
         </button>
       </div>
     </div>
