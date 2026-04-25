@@ -1,5 +1,6 @@
 import { type ChangeEvent, type FormEvent, useCallback, useRef, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
+import { useTranslation } from 'react-i18next'
 import {
   Dialog,
   DialogContent,
@@ -159,6 +160,7 @@ function useCloneVaultForm(onClose: () => void, onVaultCloned: (path: string, la
 }
 
 export function CloneVaultModal({ open, onClose, onVaultCloned }: CloneVaultModalProps) {
+  const { t } = useTranslation()
   const {
     repoUrl,
     localPath,
@@ -183,16 +185,15 @@ export function CloneVaultModal({ open, onClose, onVaultCloned }: CloneVaultModa
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[520px]" data-testid="clone-vault-modal">
         <DialogHeader>
-          <DialogTitle>Clone Git Repo</DialogTitle>
+          <DialogTitle>{t('cloneVault.title')}</DialogTitle>
           <DialogDescription>
-            Clone any remote repository into a local vault folder. Tolaria uses your existing system git
-            configuration for authentication.
+            {t('cloneVault.description')}
           </DialogDescription>
         </DialogHeader>
 
         <form className="flex flex-col gap-4 py-2" onSubmit={handleSubmit} data-testid="clone-vault-form" aria-busy={isCloning}>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-foreground" htmlFor="clone-repo-url">Repository URL</label>
+            <label className="text-xs font-medium text-foreground" htmlFor="clone-repo-url">{t('cloneVault.repoUrlLabel')}</label>
             <Input
               id="clone-repo-url"
               placeholder="git@host:owner/repo.git or https://host/owner/repo.git"
@@ -204,7 +205,7 @@ export function CloneVaultModal({ open, onClose, onVaultCloned }: CloneVaultModa
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-foreground" htmlFor="clone-vault-path">Clone to</label>
+            <label className="text-xs font-medium text-foreground" htmlFor="clone-vault-path">{t('cloneVault.cloneToLabel')}</label>
             <Input
               id="clone-vault-path"
               placeholder="~/Vaults/my-vault"
@@ -217,8 +218,8 @@ export function CloneVaultModal({ open, onClose, onVaultCloned }: CloneVaultModa
 
           <p className="text-xs text-muted-foreground">
             {isCloning
-              ? 'Cloning repository… Tolaria will open the vault when git finishes.'
-              : 'SSH keys, the git credential manager, `gh auth`, and other system git auth methods all work.'}
+              ? t('cloneVault.cloningStatus')
+              : t('cloneVault.authHint')}
           </p>
 
           {cloneError && (
@@ -233,14 +234,14 @@ export function CloneVaultModal({ open, onClose, onVaultCloned }: CloneVaultModa
               disabled={isCloning}
               data-testid="clone-vault-cancel"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               disabled={isCloneDisabled}
               data-testid="clone-vault-submit"
             >
-              {cloneStatus === 'cloning' ? 'Cloning...' : 'Clone & Open'}
+              {cloneStatus === 'cloning' ? t('cloneVault.cloning') : t('cloneVault.cloneAndOpen')}
             </Button>
           </DialogFooter>
         </form>

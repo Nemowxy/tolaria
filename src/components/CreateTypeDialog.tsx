@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,6 +18,7 @@ interface CreateTypeDialogFormProps {
 }
 
 function CreateTypeDialogForm({ initialName, onClose, onCreate }: CreateTypeDialogFormProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState(initialName)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,25 +33,25 @@ function CreateTypeDialogForm({ initialName, onClose, onCreate }: CreateTypeDial
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-muted-foreground">
-          Type Name
+          {t('createType.typeNameLabel')}
         </label>
         <Input
           autoFocus
-          placeholder="e.g. Recipe, Book, Habit..."
+          placeholder={t('createType.typeNamePlaceholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           onFocus={(e) => e.currentTarget.select()}
         />
         <p className="text-xs text-muted-foreground">
-          Creates a type document. Its properties become defaults for new docs of this type.
+          {t('createType.typeNameHint')}
         </p>
       </div>
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button type="submit" disabled={!name.trim()}>
-          Create
+          {t('common.create')}
         </Button>
       </DialogFooter>
     </form>
@@ -57,13 +59,14 @@ function CreateTypeDialogForm({ initialName, onClose, onCreate }: CreateTypeDial
 }
 
 export function CreateTypeDialog({ open, onClose, onCreate, initialName = '' }: CreateTypeDialogProps) {
+  const { t } = useTranslation()
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <DialogContent showCloseButton={false} className="sm:max-w-[380px]">
         <DialogHeader>
-          <DialogTitle>Create New Type</DialogTitle>
+          <DialogTitle>{t('createType.title')}</DialogTitle>
           <DialogDescription>
-            Create a type document so notes of this type can inherit templates and metadata.
+            {t('createType.description')}
           </DialogDescription>
         </DialogHeader>
         <CreateTypeDialogForm

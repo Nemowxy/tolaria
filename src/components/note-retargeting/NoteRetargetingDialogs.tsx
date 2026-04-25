@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import type { VaultEntry } from '../../types'
 import type { RetargetOption } from './RetargetNoteDialog'
 import { RetargetNoteDialog } from './RetargetNoteDialog'
@@ -12,16 +14,16 @@ interface NoteRetargetingDialogsProps {
   onSelectFolder: (folderPath: string) => boolean | Promise<boolean>
 }
 
-function typeDialogDescription(entry: VaultEntry | null): string {
+function typeDialogDescription(entry: VaultEntry | null, t: TFunction): string {
   return entry
-    ? `Set a new type for "${entry.title}".`
-    : 'Select a type for the active note.'
+    ? t('noteRetargeting.typeDescriptionWithEntry', { title: entry.title })
+    : t('noteRetargeting.typeDescriptionWithoutEntry')
 }
 
-function folderDialogDescription(entry: VaultEntry | null): string {
+function folderDialogDescription(entry: VaultEntry | null, t: TFunction): string {
   return entry
-    ? `Choose a destination folder for "${entry.title}".`
-    : 'Select a destination folder for the active note.'
+    ? t('noteRetargeting.folderDescriptionWithEntry', { title: entry.title })
+    : t('noteRetargeting.folderDescriptionWithoutEntry')
 }
 
 export function NoteRetargetingDialogs({
@@ -33,14 +35,15 @@ export function NoteRetargetingDialogs({
   onSelectType,
   onSelectFolder,
 }: NoteRetargetingDialogsProps) {
+  const { t } = useTranslation()
   return (
     <>
       <RetargetNoteDialog
         open={dialogState?.kind === 'type'}
-        title="Change Note Type"
-        description={typeDialogDescription(dialogEntry)}
-        searchPlaceholder="Search types"
-        emptyMessage="No other note types available."
+        title={t('noteRetargeting.changeNoteTypeTitle')}
+        description={typeDialogDescription(dialogEntry, t)}
+        searchPlaceholder={t('noteRetargeting.searchTypes')}
+        emptyMessage={t('noteRetargeting.noTypesAvailable')}
         options={typeOptions}
         onClose={onClose}
         onSelect={onSelectType}
@@ -48,10 +51,10 @@ export function NoteRetargetingDialogs({
       />
       <RetargetNoteDialog
         open={dialogState?.kind === 'folder'}
-        title="Move Note to Folder"
-        description={folderDialogDescription(dialogEntry)}
-        searchPlaceholder="Search folders"
-        emptyMessage="No other folders available."
+        title={t('noteRetargeting.moveToFolderTitle')}
+        description={folderDialogDescription(dialogEntry, t)}
+        searchPlaceholder={t('noteRetargeting.searchFolders')}
+        emptyMessage={t('noteRetargeting.noFoldersAvailable')}
         options={folderOptions}
         onClose={onClose}
         onSelect={onSelectFolder}

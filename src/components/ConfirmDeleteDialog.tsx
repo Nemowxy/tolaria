@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Trash } from '@phosphor-icons/react'
 import {
   Dialog,
@@ -23,10 +24,12 @@ export const ConfirmDeleteDialog = memo(function ConfirmDeleteDialog({
   open,
   title,
   message,
-  confirmLabel = 'Delete permanently',
+  confirmLabel,
   onConfirm,
   onCancel,
 }: ConfirmDeleteDialogProps) {
+  const { t } = useTranslation()
+  const resolvedConfirmLabel = confirmLabel ?? t('confirmDelete.defaultConfirmLabel')
   return (
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onCancel() }}>
       <DialogContent showCloseButton={false} data-testid="confirm-delete-dialog">
@@ -38,9 +41,9 @@ export const ConfirmDeleteDialog = memo(function ConfirmDeleteDialog({
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>Cancel</Button>
+          <Button variant="outline" onClick={onCancel}>{t('common.cancel')}</Button>
           <Button variant="destructive" onClick={onConfirm} data-testid="confirm-delete-btn">
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

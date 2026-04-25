@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle, FileText, Check, Loader2 } from 'lucide-react'
@@ -30,9 +31,9 @@ const BINARY_FILE_EXTENSIONS = [
 ]
 
 const RESOLUTION_LABELS: Record<NonNullable<ConflictFileState['resolution']>, string> = {
-  manual: 'Edited manually',
-  ours: 'Keeping mine',
-  theirs: 'Keeping theirs',
+  manual: 'conflictResolver.resolutionManual',
+  ours: 'conflictResolver.resolutionOurs',
+  theirs: 'conflictResolver.resolutionTheirs',
 }
 
 const RESOLUTION_SHORTCUTS: Record<string, ConflictResolutionStrategy | undefined> = {
@@ -62,10 +63,11 @@ function fileName(path: string): string {
 }
 
 function ResolutionLabel({ resolution }: { resolution: ConflictFileState['resolution'] }) {
+  const { t } = useTranslation()
   if (!resolution) return null
   return (
     <span className="flex items-center gap-1 text-xs text-[var(--feedback-success-text)]">
-      <Check size={12} />{RESOLUTION_LABELS[resolution]}
+      <Check size={12} />{t(RESOLUTION_LABELS[resolution])}
     </span>
   )
 }
@@ -83,6 +85,7 @@ function ConflictFileRow({
   onOpenInEditor: () => void
   onFocus: () => void
 }) {
+  const { t } = useTranslation()
   const rowRef = useRef<HTMLDivElement>(null)
   const binary = isBinaryFile(state.file)
   const resolved = state.resolution !== null
@@ -120,10 +123,10 @@ function ConflictFileRow({
               className="text-xs h-7 px-2"
               onClick={() => onResolve('ours')}
               disabled={state.resolving}
-              title="Keep my local version (K)"
+              title={t('conflictResolver.keepMineTitle')}
               data-testid={`resolve-ours-${state.file}`}
             >
-              Keep mine
+              {t('conflictResolver.keepMine')}
             </Button>
             <Button
               variant="outline"
@@ -131,10 +134,10 @@ function ConflictFileRow({
               className="text-xs h-7 px-2"
               onClick={() => onResolve('theirs')}
               disabled={state.resolving}
-              title="Keep remote version (T)"
+              title={t('conflictResolver.keepTheirsTitle')}
               data-testid={`resolve-theirs-${state.file}`}
             >
-              Keep theirs
+              {t('conflictResolver.keepTheirs')}
             </Button>
             {!binary && (
               <Button
@@ -142,10 +145,10 @@ function ConflictFileRow({
                 size="sm"
                 className="text-xs h-7 px-2"
                 onClick={onOpenInEditor}
-                title="Open file in editor (O)"
+                title={t('conflictResolver.openInEditorTitle')}
                 data-testid={`resolve-open-${state.file}`}
               >
-                Open in editor
+                {t('conflictResolver.openInEditor')}
               </Button>
             )}
           </>
@@ -259,14 +262,15 @@ function handleCommitShortcut({
 }
 
 function ConflictDialogHeader({ fileCount }: { fileCount: number }) {
+  const { t } = useTranslation()
   return (
     <DialogHeader>
       <div className="flex items-center gap-2">
         <AlertTriangle size={18} className="text-[var(--accent-orange)]" />
-        <DialogTitle>Resolve Merge Conflicts</DialogTitle>
+        <DialogTitle>{t('conflictResolver.title')}</DialogTitle>
       </div>
       <DialogDescription>
-        {fileCount} file{fileCount !== 1 ? 's have' : ' has'} merge conflicts. Choose how to resolve each file.
+        {t('conflictResolver.description', { count: fileCount })}
       </DialogDescription>
     </DialogHeader>
   )
@@ -306,10 +310,11 @@ function ConflictFileList({
 }
 
 function CommitButtonContent({ committing }: { committing: boolean }) {
-  if (!committing) return 'Commit & continue'
+  const { t } = useTranslation()
+  if (!committing) return t('conflictResolver.commitAndContinue')
   return (
     <>
-      <Loader2 size={14} className="animate-spin mr-1" />Committing…
+      <Loader2 size={14} className="animate-spin mr-1" />{t('conflictResolver.committing')}
     </>
   )
 }
@@ -325,13 +330,14 @@ function ConflictDialogFooter({
   onClose: () => void
   onCommit: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <DialogFooter className="flex-row items-center justify-between sm:justify-between">
       <span className="text-[11px] text-muted-foreground">
-        K = keep mine · T = keep theirs · O = open · Enter = commit
+        {t('conflictResolver.shortcutHint')}
       </span>
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button variant="outline" onClick={onClose}>{t('common.cancel')}</Button>
         <Button
           onClick={onCommit}
           disabled={!allResolved || committing}

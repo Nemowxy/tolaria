@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -13,28 +15,28 @@ type CommitDialogCopy = {
   shortcutHint: string
 }
 
-function getDialogCopy(commitMode: CommitMode): CommitDialogCopy {
+function getDialogCopy(commitMode: CommitMode, t: TFunction): CommitDialogCopy {
   const submitShortcut = formatShortcutDisplay({ display: '⌘↵' })
 
   if (commitMode === 'local') {
     return {
-      title: 'Commit',
-      description: 'This vault has no git remote configured. Tolaria will create a local commit only.',
-      actionLabel: 'Commit',
-      shortcutHint: `${submitShortcut} to commit locally`,
+      title: t('commitDialog.localTitle'),
+      description: t('commitDialog.localDescription'),
+      actionLabel: t('commitDialog.commitLocal'),
+      shortcutHint: t('commitDialog.localShortcutHint', { shortcut: submitShortcut }),
     }
   }
 
   return {
-    title: 'Commit & Push',
-    description: 'Review changed files and enter a commit message before committing and pushing.',
-    actionLabel: 'Commit & Push',
-    shortcutHint: `${submitShortcut} to commit`,
+    title: t('commitDialog.pushTitle'),
+    description: t('commitDialog.pushDescription'),
+    actionLabel: t('commitDialog.commitAndPush'),
+    shortcutHint: t('commitDialog.pushShortcutHint', { shortcut: submitShortcut }),
   }
 }
 
-function changedFilesLabel(modifiedCount: number): string {
-  return `${modifiedCount} file${modifiedCount !== 1 ? 's' : ''} changed`
+function changedFilesLabel(modifiedCount: number, t: TFunction): string {
+  return t('commitDialog.filesChanged', { count: modifiedCount })
 }
 
 function isSubmitShortcut(event: React.KeyboardEvent): boolean {
@@ -62,9 +64,10 @@ export function CommitDialog({
   onCommit,
   onClose,
 }: CommitDialogProps) {
+  const { t } = useTranslation()
   const [message, setMessage] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const copy = getDialogCopy(commitMode)
+  const copy = getDialogCopy(commitMode, t)
 
   useEffect(() => {
     if (open) {
@@ -95,7 +98,7 @@ export function CommitDialog({
           <div className="flex items-center justify-between">
             <DialogTitle>{copy.title}</DialogTitle>
             <Badge variant="secondary" className="text-xs">
-              {changedFilesLabel(modifiedCount)}
+              {changedFilesLabel(modifiedCount, t)}
             </Badge>
           </div>
           <DialogDescription>{copy.description}</DialogDescription>
@@ -103,7 +106,7 @@ export function CommitDialog({
         <Textarea
           ref={inputRef}
           className="min-h-[84px] resize-y bg-[var(--bg-input)] py-2.5 text-[13px]"
-          placeholder="Commit message..."
+          placeholder={t('commitDialog.placeholder')}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -113,7 +116,7 @@ export function CommitDialog({
           <span className="text-[11px] text-muted-foreground">{copy.shortcutHint}</span>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button onClick={handleSubmit} disabled={!message.trim()}>
               {copy.actionLabel}

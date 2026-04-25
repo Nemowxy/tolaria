@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,6 +28,7 @@ interface CreateNoteDialogProps {
 }
 
 export function CreateNoteDialog({ open, onClose, onCreate, defaultType, customTypes = [] }: CreateNoteDialogProps) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [type, setType] = useState<string>('Note')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -51,26 +53,26 @@ export function CreateNoteDialog({ open, onClose, onCreate, defaultType, customT
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <DialogContent showCloseButton={false} className="sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle>Create New Note</DialogTitle>
+          <DialogTitle>{t('createNote.title')}</DialogTitle>
           <DialogDescription className="sr-only">
-            Enter a title and choose a type for the new note.
+            {t('createNote.srDescription')}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              Title
+              {t('createNote.titleLabel')}
             </label>
             <Input
               ref={inputRef}
-              placeholder="Enter note title..."
+              placeholder={t('createNote.titlePlaceholder')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              Type
+              {t('createNote.typeLabel')}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {BUILT_IN_TYPES.map((t) => (
@@ -109,10 +111,10 @@ export function CreateNoteDialog({ open, onClose, onCreate, defaultType, customT
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={!title.trim()}>
-              Create
+              {t('common.create')}
             </Button>
           </DialogFooter>
         </form>

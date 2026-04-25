@@ -2,6 +2,75 @@ import '@testing-library/jest-dom/vitest'
 import { afterEach, vi } from 'vitest'
 import { createElement, type ReactNode, type ComponentType } from 'react'
 
+// Mock react-i18next to return English translations
+vi.mock('react-i18next', async () => {
+  const actual = await vi.importActual('react-i18next')
+  const enTranslations = await import('../../locales/en/translation.json')
+
+  return {
+    ...actual,
+    useTranslation: () => ({
+      t: (key: string, params?: Record<string, unknown>) => {
+        const keys = key.split('.')
+        let value: unknown = enTranslations.default
+
+        // Navigate to the parent object
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (value && typeof value === 'object' && keys[i] in value) {
+            value = (value as Record<string, unknown>)[keys[i]]
+          } else {
+            return key
+          }
+        }
+
+        const lastKey = keys[keys.length - 1]
+
+        // Handle pluralization: check for _one/_other suffixes
+        if (value && typeof value === 'object' && params && 'count' in params) {
+          const count = params.count as number
+          const pluralSuffix = count === 1 ? '_one' : '_other'
+          const pluralKey = `${lastKey}${pluralSuffix}`
+
+          if (pluralKey in value) {
+            const pluralValue = (value as Record<string, unknown>)[pluralKey]
+            if (typeof pluralValue === 'string') {
+              // Handle interpolation
+              return Object.entries(params).reduce(
+                (str, [paramKey, paramValue]) =>
+                  str.replace(new RegExp(`{{${paramKey}}}`, 'g'), String(paramValue)),
+                pluralValue
+              )
+            }
+          }
+        }
+
+        // Get the final value
+        if (value && typeof value === 'object' && lastKey in value) {
+          value = (value as Record<string, unknown>)[lastKey]
+        } else {
+          return key
+        }
+
+        // Handle interpolation
+        if (typeof value === 'string' && params) {
+          return Object.entries(params).reduce(
+            (str, [paramKey, paramValue]) =>
+              str.replace(new RegExp(`{{${paramKey}}}`, 'g'), String(paramValue)),
+            value
+          )
+        }
+
+        return typeof value === 'string' ? value : key
+      },
+      i18n: {
+        language: 'en',
+        changeLanguage: vi.fn(),
+      },
+    }),
+    Trans: ({ children }: { children: ReactNode }) => children,
+  }
+})
+
 // Stub fetch to prevent jsdom@28 + Node 22 undici incompatibility.
 // jsdom's JSDOMDispatcher passes an onError handler that Node 22's bundled
 // undici rejects with InvalidArgumentError (UND_ERR_INVALID_ARG).

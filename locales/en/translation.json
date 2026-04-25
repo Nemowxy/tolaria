@@ -188,6 +188,106 @@
     "customizeAllNotesColumns": "Customize All Notes columns",
     "customizeInboxColumns": "Customize Inbox columns"
   },
+  "common": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "save": "Save"
+  },
+  "cloneVault": {
+    "title": "Clone Git Repo",
+    "description": "Clone any remote repository into a local vault folder. Tolaria uses your existing system git configuration for authentication.",
+    "repoUrlLabel": "Repository URL",
+    "cloneToLabel": "Clone to",
+    "cloningStatus": "Cloning repository… Tolaria will open the vault when git finishes.",
+    "authHint": "SSH keys, the git credential manager, `gh auth`, and other system git auth methods all work.",
+    "cloning": "Cloning...",
+    "cloneAndOpen": "Clone & Open"
+  },
+  "commitDialog": {
+    "localTitle": "Commit",
+    "localDescription": "This vault has no git remote configured. Tolaria will create a local commit only.",
+    "pushTitle": "Commit & Push",
+    "pushDescription": "Review changed files and enter a commit message before committing and pushing.",
+    "localShortcutHint": "{{shortcut}} to commit locally",
+    "pushShortcutHint": "{{shortcut}} to commit",
+    "filesChanged_one": "{{count}} file changed",
+    "filesChanged_other": "{{count}} files changed",
+    "placeholder": "Commit message...",
+    "commitLocal": "Commit",
+    "commitAndPush": "Commit & Push"
+  },
+  "confirmDelete": {
+    "defaultConfirmLabel": "Delete permanently"
+  },
+  "conflictResolver": {
+    "resolutionManual": "Edited manually",
+    "resolutionOurs": "Keeping mine",
+    "resolutionTheirs": "Keeping theirs",
+    "title": "Resolve Merge Conflicts",
+    "description_one": "{{count}} file has merge conflicts. Choose how to resolve each file.",
+    "description_other": "{{count}} files have merge conflicts. Choose how to resolve each file.",
+    "keepMine": "Keep mine",
+    "keepTheirs": "Keep theirs",
+    "openInEditor": "Open in editor",
+    "keepMineTitle": "Keep my local version (K)",
+    "keepTheirsTitle": "Keep remote version (T)",
+    "openInEditorTitle": "Open file in editor (O)",
+    "commitAndContinue": "Commit & continue",
+    "committing": "Committing…",
+    "shortcutHint": "K = keep mine · T = keep theirs · O = open · Enter = commit"
+  },
+  "gitRequired": {
+    "heading": "Git repository required",
+    "description": "Tolaria uses a git repository to track changes, detect moved files, and keep your vault safe. We'll create a local repo — no remote needed.",
+    "creating": "Creating…",
+    "createRepository": "Create repository",
+    "chooseAnotherVault": "Choose another vault"
+  },
+  "createType": {
+    "title": "Create New Type",
+    "description": "Create a type document so notes of this type can inherit templates and metadata.",
+    "typeNameLabel": "Type Name",
+    "typeNamePlaceholder": "e.g. Recipe, Book, Habit...",
+    "typeNameHint": "Creates a type document. Its properties become defaults for new docs of this type."
+  },
+  "createNote": {
+    "title": "Create New Note",
+    "srDescription": "Enter a title and choose a type for the new note.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Enter note title...",
+    "typeLabel": "Type"
+  },
+  "createView": {
+    "editTitle": "Edit View",
+    "createTitle": "Create View",
+    "editSrDescription": "Update the name, icon, and filters for this saved view.",
+    "createSrDescription": "Create a saved view by choosing a name, icon, and filter rules.",
+    "iconLabel": "Icon",
+    "nameLabel": "Name",
+    "filtersLabel": "Filters",
+    "pickIconTitle": "Pick icon",
+    "namePlaceholder": "e.g. Active Projects, Reading List..."
+  },
+  "addRemote": {
+    "title": "Add Remote",
+    "description": "Connect this local vault to a git remote. Your existing local commits stay intact; Tolaria will only connect the vault when the remote history is safe to use.",
+    "repoUrlLabel": "Repository URL",
+    "helpText": "Use an empty repository or one created from this vault. SSH keys, Git Credential Manager, and other system git auth methods all work.",
+    "connecting": "Connecting...",
+    "connectRemote": "Connect Remote"
+  },
+  "noteRetargeting": {
+    "changeNoteTypeTitle": "Change Note Type",
+    "moveToFolderTitle": "Move Note to Folder",
+    "typeDescriptionWithEntry": "Set a new type for \"{{title}}\".",
+    "typeDescriptionWithoutEntry": "Select a type for the active note.",
+    "folderDescriptionWithEntry": "Choose a destination folder for \"{{title}}\".",
+    "folderDescriptionWithoutEntry": "Select a destination folder for the active note.",
+    "searchTypes": "Search types",
+    "searchFolders": "Search folders",
+    "noTypesAvailable": "No other note types available.",
+    "noFoldersAvailable": "No other folders available."
+  },
   "toast": {
     "gettingStartedCloned": "Getting Started vault cloned and opened at {{path}}",
     "wikilinksUpdated": "Updated wikilinks in {{count}} file(s)",

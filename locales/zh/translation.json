@@ -188,6 +188,106 @@
     "customizeAllNotesColumns": "自定义所有笔记列",
     "customizeInboxColumns": "自定义收件箱列"
   },
+  "common": {
+    "cancel": "取消",
+    "create": "创建",
+    "save": "保存"
+  },
+  "cloneVault": {
+    "title": "克隆 Git 仓库",
+    "description": "将任何远程仓库克隆到本地 Vault 文件夹。Tolaria 使用您现有的系统 git 配置进行身份验证。",
+    "repoUrlLabel": "仓库 URL",
+    "cloneToLabel": "克隆到",
+    "cloningStatus": "正在克隆仓库… git 完成后 Tolaria 将打开该 Vault。",
+    "authHint": "SSH 密钥、git 凭据管理器、`gh auth` 及其他系统 git 身份验证方式均可使用。",
+    "cloning": "克隆中...",
+    "cloneAndOpen": "克隆并打开"
+  },
+  "commitDialog": {
+    "localTitle": "提交",
+    "localDescription": "此 Vault 未配置 git 远程仓库。Tolaria 将仅创建本地提交。",
+    "pushTitle": "提交并推送",
+    "pushDescription": "在提交并推送之前，请查看已更改的文件并输入提交消息。",
+    "localShortcutHint": "{{shortcut}} 本地提交",
+    "pushShortcutHint": "{{shortcut}} 提交",
+    "filesChanged_one": "{{count}} 个文件已更改",
+    "filesChanged_other": "{{count}} 个文件已更改",
+    "placeholder": "提交消息...",
+    "commitLocal": "提交",
+    "commitAndPush": "提交并推送"
+  },
+  "confirmDelete": {
+    "defaultConfirmLabel": "永久删除"
+  },
+  "conflictResolver": {
+    "resolutionManual": "已手动编辑",
+    "resolutionOurs": "保留我的",
+    "resolutionTheirs": "保留他们的",
+    "title": "解决合并冲突",
+    "description_one": "{{count}} 个文件存在合并冲突。请选择解决方式。",
+    "description_other": "{{count}} 个文件存在合并冲突。请选择每个文件的解决方式。",
+    "keepMine": "保留我的",
+    "keepTheirs": "保留他们的",
+    "openInEditor": "在编辑器中打开",
+    "keepMineTitle": "保留我的本地版本 (K)",
+    "keepTheirsTitle": "保留远程版本 (T)",
+    "openInEditorTitle": "在编辑器中打开文件 (O)",
+    "commitAndContinue": "提交并继续",
+    "committing": "提交中…",
+    "shortcutHint": "K = 保留我的 · T = 保留他们的 · O = 打开 · Enter = 提交"
+  },
+  "gitRequired": {
+    "heading": "需要 Git 仓库",
+    "description": "Tolaria 使用 git 仓库来跟踪更改、检测已移动的文件并保证您的 Vault 安全。我们将创建一个本地仓库 — 无需远程仓库。",
+    "creating": "创建中…",
+    "createRepository": "创建仓库",
+    "chooseAnotherVault": "选择另一个 Vault"
+  },
+  "createType": {
+    "title": "创建新类型",
+    "description": "创建一个类型文档，使此类型的笔记可以继承模板和元数据。",
+    "typeNameLabel": "类型名称",
+    "typeNamePlaceholder": "例如：菜谱、书籍、习惯...",
+    "typeNameHint": "创建一个类型文档。其属性将成为此类型新文档的默认值。"
+  },
+  "createNote": {
+    "title": "创建新笔记",
+    "srDescription": "输入标题并为新笔记选择类型。",
+    "titleLabel": "标题",
+    "titlePlaceholder": "输入笔记标题...",
+    "typeLabel": "类型"
+  },
+  "createView": {
+    "editTitle": "编辑视图",
+    "createTitle": "创建视图",
+    "editSrDescription": "更新此已保存视图的名称、图标和筛选条件。",
+    "createSrDescription": "通过选择名称、图标和筛选规则来创建已保存视图。",
+    "iconLabel": "图标",
+    "nameLabel": "名称",
+    "filtersLabel": "筛选器",
+    "pickIconTitle": "选择图标",
+    "namePlaceholder": "例如：活跃项目、阅读列表..."
+  },
+  "addRemote": {
+    "title": "添加远程仓库",
+    "description": "将此本地 Vault 连接到 git 远程仓库。您现有的本地提交保持完整；Tolaria 仅在远程历史记录安全可用时才连接 Vault。",
+    "repoUrlLabel": "仓库 URL",
+    "helpText": "使用空仓库或从此 Vault 创建的仓库。SSH 密钥、Git Credential Manager 及其他系统 git 身份验证方式均可使用。",
+    "connecting": "连接中...",
+    "connectRemote": "连接远程仓库"
+  },
+  "noteRetargeting": {
+    "changeNoteTypeTitle": "更改笔记类型",
+    "moveToFolderTitle": "移动笔记到文件夹",
+    "typeDescriptionWithEntry": "为 \"{{title}}\" 设置新类型。",
+    "typeDescriptionWithoutEntry": "为当前笔记选择类型。",
+    "folderDescriptionWithEntry": "为 \"{{title}}\" 选择目标文件夹。",
+    "folderDescriptionWithoutEntry": "为当前笔记选择目标文件夹。",
+    "searchTypes": "搜索类型",
+    "searchFolders": "搜索文件夹",
+    "noTypesAvailable": "没有其他可用的笔记类型。",
+    "noFoldersAvailable": "没有其他可用的文件夹。"
+  },
   "toast": {
     "gettingStartedCloned": "入门 Vault 已克隆并打开于 {{path}}",
     "wikilinksUpdated": "已更新 {{count}} 个文件中的 Wikilink",
