@@ -179,5 +179,34 @@
     "week": "Week",
     "month": "Month",
     "all": "All"
+  },
+  "app": {
+    "loading": "Loading…",
+    "localVault": "Local Vault",
+    "customizeViewColumns": "Customize {{name}} columns",
+    "customizeViewColumnsDefault": "Customize View columns",
+    "customizeAllNotesColumns": "Customize All Notes columns",
+    "customizeInboxColumns": "Customize Inbox columns"
+  },
+  "toast": {
+    "gettingStartedCloned": "Getting Started vault cloned and opened at {{path}}",
+    "wikilinksUpdated": "Updated wikilinks in {{count}} file(s)",
+    "wikilinksUpdateFailed": "Failed to update wikilinks: {{error}}",
+    "conflictDetected": "Conflict in {{names}} — click to resolve",
+    "couldNotOpenNote": "Could not open \"{{title}}\" in this window",
+    "folderCreated": "Created folder \"{{name}}\"",
+    "folderCreateFailed": "Failed to create folder: {{error}}",
+    "discardFailed": "Failed to discard changes",
+    "contentNotAvailable": "Content not available (untracked)",
+    "typeCreated": "Type \"{{name}}\" created",
+    "typeSet": "Type set to \"{{name}}\"",
+    "viewCreated": "View \"{{name}}\" created",
+    "viewUpdated": "View \"{{name}}\" updated",
+    "viewDeleted": "View deleted",
+    "updateDownloading": "Update is downloading…",
+    "upToDate": "You're on the latest version",
+    "updateCheckFailed": "Could not check for updates",
+    "aiGuidanceRestored": "Tolaria AI guidance restored",
+    "aiGuidanceRestoreFailed": "Failed to restore Tolaria AI guidance: {{error}}"
   }
 }

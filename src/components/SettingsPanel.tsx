@@ -6,6 +6,7 @@ import {
   type AiAgentId,
   type AiAgentsStatus,
 } from '../lib/aiAgents'
+import i18n from '../i18n'
 import {
   useState,
   useRef,
@@ -244,6 +245,12 @@ function SettingsPanelInner({
     trackTelemetryConsentChange(settings.analytics_enabled === true, draft.analytics)
     onSave(buildSettingsFromDraft(settings, draft))
     onSaveExplicitOrganization?.(draft.explicitOrganization)
+    const langToApply = draft.languagePreference === undefined ? undefined : draft.languagePreference
+    if (langToApply) {
+      i18n.changeLanguage(langToApply)
+    } else {
+      i18n.changeLanguage()
+    }
     onClose()
   }, [draft, onClose, onSave, onSaveExplicitOrganization, settings])
 

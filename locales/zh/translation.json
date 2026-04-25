@@ -179,5 +179,34 @@
     "week": "本周",
     "month": "本月",
     "all": "全部"
+  },
+  "app": {
+    "loading": "加载中…",
+    "localVault": "本地 Vault",
+    "customizeViewColumns": "自定义 {{name}} 列",
+    "customizeViewColumnsDefault": "自定义视图列",
+    "customizeAllNotesColumns": "自定义所有笔记列",
+    "customizeInboxColumns": "自定义收件箱列"
+  },
+  "toast": {
+    "gettingStartedCloned": "入门 Vault 已克隆并打开于 {{path}}",
+    "wikilinksUpdated": "已更新 {{count}} 个文件中的 Wikilink",
+    "wikilinksUpdateFailed": "更新 Wikilink 失败: {{error}}",
+    "conflictDetected": "{{names}} 中存在冲突 — 点击解决",
+    "couldNotOpenNote": "无法在此窗口中打开\"{{title}}\"",
+    "folderCreated": "已创建文件夹\"{{name}}\"",
+    "folderCreateFailed": "创建文件夹失败: {{error}}",
+    "discardFailed": "放弃更改失败",
+    "contentNotAvailable": "内容不可用（未追踪）",
+    "typeCreated": "类型\"{{name}}\"已创建",
+    "typeSet": "类型已设置为\"{{name}}\"",
+    "viewCreated": "视图\"{{name}}\"已创建",
+    "viewUpdated": "视图\"{{name}}\"已更新",
+    "viewDeleted": "视图已删除",
+    "updateDownloading": "更新正在下载…",
+    "upToDate": "已是最新版本",
+    "updateCheckFailed": "无法检查更新",
+    "aiGuidanceRestored": "Tolaria AI 指导已恢复",
+    "aiGuidanceRestoreFailed": "恢复 Tolaria AI 指导失败: {{error}}"
   }
 }

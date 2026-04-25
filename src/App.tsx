@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from './i18n'
 import { Sidebar } from './components/Sidebar'
 import { NoteList } from './components/NoteList'
 import type { DeletedNoteEntry } from './components/note-list/noteListUtils'
@@ -204,6 +206,7 @@ function createPulseDeletedNoteEntry(fullPath: string, relativePath: string): De
 
 /** Wraps useEditorSave to also keep outgoingLinks in sync on save and on content change. */
 function App() {
+  const { t } = useTranslation()
   const noteWindowParams = useMemo(() => isNoteWindow() ? getNoteWindowParams() : null, [])
   const [selection, setSelection] = useState<SidebarSelection>(DEFAULT_SELECTION)
   const [noteListFilter, setNoteListFilter] = useState<NoteListFilter>('open')
@@ -272,21 +275,21 @@ function App() {
       return
     }
 
-    const label = vaultPath.split('/').filter(Boolean).pop() || 'Local Vault'
+    const label = vaultPath.split('/').filter(Boolean).pop() || t('app.localVault')
     syncVaultSelection(vaultPath, label)
-  }, [allVaults, switchVault, syncVaultSelection])
+  }, [allVaults, switchVault, syncVaultSelection, t])
 
   const handleGettingStartedVaultReady = useCallback((vaultPath: string) => {
     rememberVaultChoice(vaultPath)
-    setToastMessage(`Getting Started vault cloned and opened at ${vaultPath}`)
-  }, [rememberVaultChoice])
+    setToastMessage(t('toast.gettingStartedCloned', { path: vaultPath }))
+  }, [rememberVaultChoice, t])
 
   const handleOnboardingVaultReady = useCallback((vaultPath: string, source: 'template' | 'empty' | 'existing') => {
     rememberVaultChoice(vaultPath)
     if (source === 'template') {
-      setToastMessage(`Getting Started vault cloned and opened at ${vaultPath}`)
+      setToastMessage(t('toast.gettingStartedCloned', { path: vaultPath }))
     }
-  }, [rememberVaultChoice])
+  }, [rememberVaultChoice, t])
   const cloneGettingStartedVault = useGettingStartedClone({
     onError: (message) => setToastMessage(message),
     onSuccess: handleGettingStartedVaultReady,
@@ -370,6 +373,13 @@ function App() {
   }, [updateConfig, vaultConfig.inbox?.noteListProperties])
   const { settings, loaded: settingsLoaded, saveSettings } = useSettings()
   useThemeMode(settings.theme_mode, settingsLoaded)
+  useEffect(() => {
+    if (!settingsLoaded) return
+    const lang = settings.language_preference
+    if (lang && i18n.language !== lang) {
+      i18n.changeLanguage(lang)
+    }
+  }, [settings.language_preference, settingsLoaded])
   const documentThemeMode = useDocumentThemeMode()
   const handleToggleThemeMode = useCallback(() => {
     const theme_mode = documentThemeMode === 'dark' ? 'light' : 'dark'
@@ -441,11 +451,11 @@ function App() {
       const count = await invoke<number>('update_wikilinks_for_renames', { vaultPath: resolvedPath, renames: detectedRenames })
       setDetectedRenames([])
       vault.reloadVault()
-      setToastMessage(`Updated wikilinks in ${count} file${count !== 1 ? 's' : ''}`)
+      setToastMessage(t('toast.wikilinksUpdated', { count }))
     } catch (err) {
-      setToastMessage(`Failed to update wikilinks: ${err}`)
+      setToastMessage(t('toast.wikilinksUpdateFailed', { error: String(err) }))
     }
-  }, [resolvedPath, detectedRenames, vault, setToastMessage])
+  }, [resolvedPath, detectedRenames, vault, setToastMessage, t])
 
   const handleDismissRenames = useCallback(() => setDetectedRenames([]), [])
 
@@ -522,7 +532,7 @@ function App() {
     onVaultUpdated: handlePulledVaultUpdate,
     onConflict: (files) => {
       const names = files.map((f) => f.split('/').pop()).join(', ')
-      setToastMessage(`Conflict in ${names} — click to resolve`)
+      setToastMessage(t('toast.conflictDetected', { names }))
     },
     onToast: (msg) => setToastMessage(msg),
   })
@@ -546,7 +556,7 @@ function App() {
       }
       if (noteWindowMissingPathRef.current === noteWindowParams.notePath) return
       noteWindowMissingPathRef.current = noteWindowParams.notePath
-      setToastMessage(`Could not open "${noteWindowParams.noteTitle}" in this window`)
+      setToastMessage(t('toast.couldNotOpenNote', { title: noteWindowParams.noteTitle }))
     })
 
     return () => {
@@ -728,13 +738,13 @@ function App() {
         await mockInvoke('create_vault_folder', { vaultPath: resolvedPath, folderName: name })
       }
       await vault.reloadFolders()
-      setToastMessage(`Created folder "${name}"`)
+      setToastMessage(t('toast.folderCreated', { name }))
       return true
     } catch (e) {
-      setToastMessage(`Failed to create folder: ${e}`)
+      setToastMessage(t('toast.folderCreateFailed', { error: String(e) }))
       return false
     }
-  }, [resolvedPath, vault, setToastMessage])
+  }, [resolvedPath, vault, setToastMessage, t])
 
   const folderActions = useFolderActions({
     vaultPath: resolvedPath,
@@ -784,12 +794,12 @@ function App() {
         notes.closeAllTabs()
       }
     } catch (err) {
-      setToastMessage(typeof err === 'string' ? err : 'Failed to discard changes')
+      setToastMessage(typeof err === 'string' ? err : t('toast.discardFailed'))
     }
-  }, [resolvedPath, vault, notes, setToastMessage])
+  }, [resolvedPath, vault, notes, setToastMessage, t])
 
   const handleOpenDeletedNote = useCallback(async (entry: DeletedNoteEntry) => {
-    let previewContent = 'Content not available (untracked)'
+    let previewContent = t('toast.contentNotAvailable')
     let hasDiff = false
     try {
       const diff = await vault.loadDiff(entry.path)
@@ -802,9 +812,9 @@ function App() {
     if (hasDiff) {
       setTimeout(() => diffToggleRef.current(), 50)
     } else {
-      setToastMessage('Content not available (untracked)')
+      setToastMessage(t('toast.contentNotAvailable'))
     }
-  }, [vault, notes, setToastMessage])
+  }, [vault, notes, setToastMessage, t])
 
   const commitFlow = useCommitFlow({
     savePending: appSave.savePending,
@@ -922,9 +932,9 @@ function App() {
 
   const handleCreateType = useCallback(async (name: string) => {
     const created = await notes.handleCreateType(name)
-    if (created) setToastMessage(`Type "${name}" created`)
+    if (created) setToastMessage(t('toast.typeCreated', { name }))
     return created
-  }, [notes, setToastMessage])
+  }, [notes, setToastMessage, t])
 
   const handleCreateMissingType = useCallback(async (path: string, missingType: string, nextTypeName: string) => {
     const trimmed = nextTypeName.trim()
@@ -949,11 +959,11 @@ function App() {
     await notes.handleUpdateFrontmatter(path, 'type', resolvedTypeName)
     setToastMessage(
       plan.status === 'create' && resolvedTypeName === missingType
-        ? `Type "${resolvedTypeName}" created`
-        : `Type set to "${resolvedTypeName}"`,
+        ? t('toast.typeCreated', { name: resolvedTypeName })
+        : t('toast.typeSet', { name: resolvedTypeName }),
     )
     return true
-  }, [notes, resolvedPath, setToastMessage, vault.entries])
+  }, [notes, resolvedPath, setToastMessage, vault.entries, t])
 
   const handleCreateOrUpdateView = useCallback(async (definition: ViewDefinition) => {
     const editing = dialogs.editingView
@@ -967,9 +977,9 @@ function App() {
     await vault.reloadViews()
     await vault.reloadVault()
     vault.reloadFolders()
-    setToastMessage(editing ? `View "${nextDefinition.name}" updated` : `View "${nextDefinition.name}" created`)
+    setToastMessage(editing ? t('toast.viewUpdated', { name: nextDefinition.name }) : t('toast.viewCreated', { name: nextDefinition.name }))
     handleSetSelection({ kind: 'view', filename })
-  }, [resolvedPath, vault, handleSetSelection, dialogs.editingView])
+  }, [resolvedPath, vault, handleSetSelection, dialogs.editingView, t])
 
   const handleUpdateViewDefinition = useCallback(async (filename: string, patch: Partial<ViewDefinition>) => {
     const existing = vault.views.find((view) => view.filename === filename)
@@ -998,8 +1008,8 @@ function App() {
     if (selection.kind === 'view' && selection.filename === filename) {
       handleSetSelection({ kind: 'filter', filter: 'all' })
     }
-    setToastMessage('View deleted')
-  }, [resolvedPath, vault, selection, handleSetSelection])
+    setToastMessage(t('toast.viewDeleted'))
+  }, [resolvedPath, vault, selection, handleSetSelection, t])
 
   const availableFields = useMemo(() => {
     const builtIn = ['type', 'status', 'title', 'favorite', 'body']
@@ -1070,7 +1080,7 @@ function App() {
 
   const handleCheckForUpdates = useCallback(async () => {
     if (updateStatus.state === 'downloading') {
-      setToastMessage('Update is downloading…')
+      setToastMessage(t('toast.updateDownloading'))
       return
     }
     if (updateStatus.state === 'ready') {
@@ -1079,11 +1089,11 @@ function App() {
     }
     const result = await updateActions.checkForUpdates()
     if (result === 'up-to-date') {
-      setToastMessage("You're on the latest version")
+      setToastMessage(t('toast.upToDate'))
     } else if (result === 'error') {
-      setToastMessage('Could not check for updates')
+      setToastMessage(t('toast.updateCheckFailed'))
     }
-  }, [updateActions, updateStatus.state, setToastMessage])
+  }, [updateActions, updateStatus.state, setToastMessage, t])
 
   const handleRepairVault = useCallback(async () => {
     if (!resolvedPath) return
@@ -1098,7 +1108,7 @@ function App() {
     }
   }, [refreshVaultAiGuidance, resolvedPath, vault, setToastMessage])
 
-  const restoreVaultAiGuidance = useCallback(async (successToast: string | null = 'Tolaria AI guidance restored') => {
+  const restoreVaultAiGuidance = useCallback(async (successToast: string | null = t('toast.aiGuidanceRestored')) => {
     if (!resolvedPath) return
     try {
       const tauriInvoke = isTauri() ? invoke : mockInvoke
@@ -1107,9 +1117,9 @@ function App() {
       await refreshVaultAiGuidance()
       if (successToast) setToastMessage(successToast)
     } catch (err) {
-      setToastMessage(`Failed to restore Tolaria AI guidance: ${err}`)
+      setToastMessage(t('toast.aiGuidanceRestoreFailed', { error: String(err) }))
     }
-  }, [refreshVaultAiGuidance, resolvedPath, vault, setToastMessage])
+  }, [refreshVaultAiGuidance, resolvedPath, vault, setToastMessage, t])
 
   const activeDeletedFile = useMemo(() => {
     const activeTabPath = notes.activeTabPath
@@ -1184,13 +1194,13 @@ function App() {
   const noteListColumnsLabel = useMemo(() => {
     if (effectiveSelection.kind === 'view') {
       const selectedView = vault.views.find((view) => view.filename === effectiveSelection.filename)
-      return selectedView ? `Customize ${selectedView.definition.name} columns` : 'Customize View columns'
+      return selectedView ? t('app.customizeViewColumns', { name: selectedView.definition.name }) : t('app.customizeViewColumnsDefault')
     }
 
     return effectiveSelection.kind === 'filter' && effectiveSelection.filter === 'all'
-      ? 'Customize All Notes columns'
-      : 'Customize Inbox columns'
-  }, [effectiveSelection, vault.views])
+      ? t('app.customizeAllNotesColumns')
+      : t('app.customizeInboxColumns')
+  }, [effectiveSelection, vault.views, t])
   const activeNoteModified = useMemo(
     () => vault.modifiedFiles.some((file) => file.path === notes.activeTabPath),
     [notes.activeTabPath, vault.modifiedFiles],
@@ -1610,10 +1620,11 @@ function AiAgentsOnboardingView({
 
 /** Loading spinner view - extracted from main App component */
 function LoadingView() {
+  const { t } = useTranslation()
   return (
     <div className="app-shell">
       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--sidebar)' }}>
-        <span style={{ color: 'var(--muted-foreground)', fontSize: 14 }}>Loading…</span>
+        <span style={{ color: 'var(--muted-foreground)', fontSize: 14 }}>{t('app.loading')}</span>
       </div>
     </div>
   )
