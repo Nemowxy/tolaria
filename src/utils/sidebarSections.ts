@@ -9,24 +9,30 @@ import { resolveIcon } from './iconRegistry'
 import { pluralizeType } from '../hooks/useCommandRegistry'
 import { isLegacyJournalingType } from './legacyTypes'
 import { canonicalizeTypeName } from './vaultTypes'
+import i18next from '../i18n'
 import {
   Wrench, Flask, Target, ArrowsClockwise,
   Users, CalendarBlank, Tag, StackSimple,
 } from '@phosphor-icons/react'
 
-const BUILT_IN_SECTION_GROUPS: SectionGroup[] = [
-  { label: 'Projects', type: 'Project', Icon: Wrench },
-  { label: 'Experiments', type: 'Experiment', Icon: Flask },
-  { label: 'Responsibilities', type: 'Responsibility', Icon: Target },
-  { label: 'Procedures', type: 'Procedure', Icon: ArrowsClockwise },
-  { label: 'People', type: 'Person', Icon: Users },
-  { label: 'Events', type: 'Event', Icon: CalendarBlank },
-  { label: 'Topics', type: 'Topic', Icon: Tag },
-  { label: 'Types', type: 'Type', Icon: StackSimple },
-]
+export function getBuiltInSectionGroups(): SectionGroup[] {
+  return [
+    { label: i18next.t('sidebar.projects'), type: 'Project', Icon: Wrench },
+    { label: i18next.t('sidebar.experiments'), type: 'Experiment', Icon: Flask },
+    { label: i18next.t('sidebar.responsibilities'), type: 'Responsibility', Icon: Target },
+    { label: i18next.t('sidebar.procedures'), type: 'Procedure', Icon: ArrowsClockwise },
+    { label: i18next.t('sidebar.people'), type: 'Person', Icon: Users },
+    { label: i18next.t('sidebar.events'), type: 'Event', Icon: CalendarBlank },
+    { label: i18next.t('sidebar.topics'), type: 'Topic', Icon: Tag },
+    { label: i18next.t('sidebar.types'), type: 'Type', Icon: StackSimple },
+  ]
+}
 
 /** Metadata lookup for well-known types (icon/label only — NOT used to determine which sections to show) */
-const BUILT_IN_TYPE_MAP = new Map(BUILT_IN_SECTION_GROUPS.map((sg) => [sg.type, sg]))
+function getBuiltInTypeMap(): Map<string, SectionGroup> {
+  return new Map(getBuiltInSectionGroups().map((sg) => [sg.type, sg]))
+}
+
 
 const isMarkdown = (e: VaultEntry) => e.fileKind === 'markdown' || !e.fileKind
 const isActive = (e: VaultEntry) => !e.archived
@@ -86,7 +92,7 @@ function resolveLabel(type: string, typeEntry: VaultEntry | undefined, builtIn: 
 
 /** Build a single SectionGroup for a type, using built-in metadata or Type entry for icon/label */
 export function buildSectionGroup(type: string, typeEntryMap: Record<string, VaultEntry>): SectionGroup {
-  const builtIn = BUILT_IN_TYPE_MAP.get(type)
+  const builtIn = getBuiltInTypeMap().get(type)
   const typeEntry = typeEntryMap[type]
   const customColor = typeEntry?.color ?? null
   const label = resolveLabel(type, typeEntry, builtIn)
@@ -120,4 +126,3 @@ export function sortSections(groups: SectionGroup[], typeEntryMap: Record<string
   })
 }
 
-export { BUILT_IN_SECTION_GROUPS }

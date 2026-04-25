@@ -10,6 +10,7 @@ import {
   type VaultAiGuidanceStatus,
 } from '../../lib/vaultAiGuidance'
 import type { CommandAction } from './types'
+import i18next from '../../i18n'
 
 interface AiAgentCommandsConfig {
   aiAgentsStatus?: AiAgentsStatus
@@ -34,7 +35,7 @@ function explicitSwitchCommands({
     .filter((definition) => isAiAgentInstalled(aiAgentsStatus, definition.id))
     .map((definition) => ({
       id: `switch-ai-agent-${definition.id}`,
-      label: `Switch AI Agent to ${definition.label}`,
+      label: `${i18next.t('commands.switchAiAgentTo')} ${definition.label}`,
       group: 'Settings' as const,
       keywords: ['ai', 'agent', 'default', 'switch', 'claude', 'codex', definition.shortLabel.toLowerCase()],
       enabled: true,
@@ -53,7 +54,7 @@ function restoreGuidanceCommands({
   return [
     {
       id: 'restore-vault-ai-guidance',
-      label: 'Restore Tolaria AI Guidance',
+      label: i18next.t('commands.restoreTolariaAiGuidance'),
       group: 'Settings',
       keywords: ['ai', 'agent', 'guidance', 'restore', 'repair', 'claude', 'codex', 'agents'],
       enabled: true,
@@ -75,7 +76,7 @@ export function buildAiAgentCommands({
   const commands: CommandAction[] = [
     {
       id: 'open-ai-agents',
-      label: 'Open AI Agents',
+      label: i18next.t('commands.openAiAgents'),
       group: 'Settings',
       keywords: ['ai', 'agent', 'agents', 'assistant', 'claude', 'codex', 'settings'],
       enabled: !!onOpenAiAgents,
@@ -99,7 +100,7 @@ export function buildAiAgentCommands({
 
   commands.push({
     id: 'switch-default-ai-agent',
-    label: selectedAiAgentLabel ? `Switch Default AI Agent (${selectedAiAgentLabel})` : 'Switch Default AI Agent',
+    label: selectedAiAgentLabel ? `${i18next.t('commands.switchDefaultAiAgent')} (${selectedAiAgentLabel})` : i18next.t('commands.switchDefaultAiAgent'),
     group: 'Settings',
     keywords: ['ai', 'agent', 'default', 'switch', 'claude', 'codex'],
     enabled: !!onCycleDefaultAiAgent,

@@ -1,5 +1,7 @@
 import { APP_COMMAND_IDS, getAppCommandShortcutDisplay } from '../appCommandCatalog'
 import type { CommandAction } from './types'
+import i18next from '../../i18n'
+
 
 interface NoteCommandsConfig {
   hasActiveNote: boolean
@@ -59,7 +61,7 @@ function buildCoreNoteCommands(config: NoteCommandsConfig): CommandAction[] {
   return [
     createNoteCommand({
       id: 'create-note',
-      label: 'New Note',
+      label: i18next.t('commands.newNote'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.fileNewNote),
       keywords: ['new', 'create', 'add'],
       enabled: true,
@@ -67,14 +69,14 @@ function buildCoreNoteCommands(config: NoteCommandsConfig): CommandAction[] {
     }),
     createNoteCommand({
       id: 'create-type',
-      label: 'New Type',
+      label: i18next.t('commands.newType'),
       keywords: ['new', 'create', 'type', 'template'],
       enabled: !!config.onCreateType,
       execute: () => config.onCreateType?.(),
     }),
     createNoteCommand({
       id: 'save-note',
-      label: 'Save Note',
+      label: i18next.t('commands.saveNote'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.fileSave),
       keywords: ['write'],
       enabled: config.hasActiveNote,
@@ -94,7 +96,7 @@ function buildDestructiveNoteCommands(config: NoteCommandsConfig): CommandAction
   return [
     createNoteCommand({
       id: 'delete-note',
-      label: 'Delete Note',
+      label: i18next.t('commands.deleteNote'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.noteDelete),
       keywords: ['delete', 'remove'],
       enabled: config.hasActiveNote,
@@ -103,7 +105,7 @@ function buildDestructiveNoteCommands(config: NoteCommandsConfig): CommandAction
     }),
     createNoteCommand({
       id: 'archive-note',
-      label: config.isArchived ? 'Unarchive Note' : 'Archive Note',
+      label: config.isArchived ? i18next.t('commands.unarchiveNote') : i18next.t('commands.archiveNote'),
       keywords: ['archive'],
       enabled: config.hasActiveNote,
       path: config.activeTabPath,
@@ -116,7 +118,7 @@ function buildPinnedNoteCommands(config: NoteCommandsConfig): CommandAction[] {
   return [
     createNoteCommand({
       id: 'toggle-favorite',
-      label: config.isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+      label: config.isFavorite ? i18next.t('commands.removeFromFavorites') : i18next.t('commands.addToFavorites'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.noteToggleFavorite),
       keywords: ['favorite', 'star', 'bookmark', 'pin'],
       enabled: config.hasActiveNote && !!config.onToggleFavorite,
@@ -125,7 +127,7 @@ function buildPinnedNoteCommands(config: NoteCommandsConfig): CommandAction[] {
     }),
     createNoteCommand({
       id: 'toggle-organized',
-      label: config.isOrganized ? 'Mark as Unorganized' : 'Mark as Organized',
+      label: config.isOrganized ? i18next.t('commands.markUnorganized') : i18next.t('commands.markOrganized'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.noteToggleOrganized),
       keywords: ['organized', 'inbox', 'triage', 'done'],
       enabled: config.hasActiveNote && !!config.onToggleOrganized,
@@ -147,7 +149,7 @@ function buildRecoveryCommands(config: NoteCommandsConfig): CommandAction[] {
   return [
     createNoteCommand({
       id: 'restore-deleted-note',
-      label: 'Restore Deleted Note',
+      label: i18next.t('commands.restoreDeletedNote'),
       keywords: ['restore', 'deleted', 'undelete', 'git', 'checkout'],
       enabled: !!config.canRestoreDeletedNote && !!config.onRestoreDeletedNote,
       execute: () => config.onRestoreDeletedNote?.(),
@@ -159,21 +161,21 @@ function buildRetargetingCommands(config: NoteCommandsConfig): CommandAction[] {
   return [
     createNoteCommand({
       id: 'set-note-icon',
-      label: 'Set Note Icon',
+      label: i18next.t('commands.setNoteIcon'),
       keywords: ['icon', 'emoji', 'set', 'add', 'change', 'picker'],
       enabled: config.hasActiveNote && !!config.onSetNoteIcon,
       execute: () => config.onSetNoteIcon?.(),
     }),
     createNoteCommand({
       id: 'change-note-type',
-      label: 'Change Note Type…',
+      label: i18next.t('commands.changeNoteType'),
       keywords: ['type', 'change', 'retarget', 'section', 'move'],
       enabled: config.hasActiveNote && !!config.onChangeNoteType,
       execute: () => config.onChangeNoteType?.(),
     }),
     createNoteCommand({
       id: 'move-note-to-folder',
-      label: 'Move Note to Folder…',
+      label: i18next.t('commands.moveToFolder'),
       keywords: ['folder', 'move', 'retarget', 'organize'],
       enabled: config.hasActiveNote && !!config.onMoveNoteToFolder && !!config.canMoveNoteToFolder,
       execute: () => config.onMoveNoteToFolder?.(),
@@ -185,14 +187,14 @@ function buildPresentationCommands(config: NoteCommandsConfig): CommandAction[] 
   return [
     createNoteCommand({
       id: 'remove-note-icon',
-      label: 'Remove Note Icon',
+      label: i18next.t('commands.removeNoteIcon'),
       keywords: ['icon', 'emoji', 'remove', 'delete', 'clear'],
       enabled: config.hasActiveNote && !!config.activeNoteHasIcon && !!config.onRemoveNoteIcon,
       execute: () => config.onRemoveNoteIcon?.(),
     }),
     createNoteCommand({
       id: 'open-in-new-window',
-      label: 'Open in New Window',
+      label: i18next.t('commands.openInNewWindow'),
       shortcut: getAppCommandShortcutDisplay(APP_COMMAND_IDS.noteOpenInNewWindow),
       keywords: ['window', 'new', 'detach', 'pop', 'external', 'separate'],
       enabled: config.hasActiveNote,
