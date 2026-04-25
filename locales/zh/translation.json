@@ -1,5 +1,71 @@
 {
   "settings": {
-    "title": "设置"
+    "title": "设置",
+    "close": "关闭设置",
+    "cancel": "取消",
+    "save": "保存",
+    "hint": "⌘, 打开设置",
+    "sync": {
+      "title": "同步与更新",
+      "description": "配置后台拉取和 Tolaria 遵循的更新源。Stable 仅接收手动推送的版本，Alpha 跟随每次推送到 main。",
+      "pullInterval": "拉取间隔（分钟）",
+      "releaseChannel": "发布渠道",
+      "stable": "稳定版",
+      "alpha": "测试版"
+    },
+    "appearance": {
+      "title": "外观",
+      "description": "选择 Tolaria 界面、编辑器、菜单和对话框使用的颜色模式。",
+      "light": "浅色",
+      "dark": "深色"
+    },
+    "autogit": {
+      "title": "自动 Git",
+      "description": "在编辑暂停或应用不活跃时自动创建保守的 Git 检查点。",
+      "unavailable": "AutoGit 在当前 vault 启用 Git 之前不可用。请先为此 vault 初始化 Git。",
+      "enable": "启用 AutoGit",
+      "enableDescription": "启用后，Tolaria 将在空闲暂停或应用变为不活跃后自动提交并推送本地更改。",
+      "idleThreshold": "空闲阈值（秒）",
+      "inactiveGrace": "应用不活跃宽限期（秒）"
+    },
+    "titles": {
+      "title": "标题与文件名",
+      "description": "选择 Tolaria 是否自动从第一个 H1 标题同步未命名笔记的文件名。",
+      "autoRename": "从第一个 H1 自动重命名未命名笔记",
+      "autoRenameDescription": "启用后，Tolaria 会在第一个 H1 成为真实标题时立即重命名未命名笔记文件。关闭此选项可保持文件名不变，直到您从面包屑栏手动重命名。"
+    },
+    "aiAgents": {
+      "title": "AI 代理",
+      "description": "选择 Tolaria 在 AI 面板和命令面板中使用的 CLI AI 代理。",
+      "defaultAgent": "默认 AI 代理",
+      "installed": "（已安装）",
+      "missing": "（缺失）",
+      "ready": " 已准备就绪。",
+      "notInstalled": " 尚未安装。您仍可以现在选择它，稍后再安装。"
+    },
+    "workflow": {
+      "title": "工作流",
+      "description": "选择 Tolaria 是否显示收件箱工作流，以及在分类项目时如何移动。",
+      "organizeExplicitly": "显式组织笔记",
+      "organizeDescription": "启用后，收件箱部分显示未组织的笔记，切换按钮可标记笔记为已组织。",
+      "autoAdvance": "自动前进到下一个收件箱项目",
+      "autoAdvanceDescription": "启用后，将收件箱笔记标记为已组织会立即打开下一个可见的收件箱笔记。"
+    },
+    "privacy": {
+      "title": "隐私与遥测",
+      "description": "匿名数据帮助我们修复错误并改进 Tolaria。不会发送任何 vault 内容、笔记标题或文件路径。",
+      "crashReporting": "崩溃报告",
+      "crashDescription": "发送匿名错误报告",
+      "analytics": "使用分析",
+      "analyticsDescription": "分享匿名使用模式"
+    },
+    "language": {
+      "title": "语言",
+      "description": "选择 Tolaria 界面语言。",
+      "displayLanguage": "显示语言",
+      "followSystem": "跟随系统",
+      "english": "English",
+      "chinese": "中文"
+    }
   }
 }

@@ -1,5 +1,71 @@
 {
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "close": "Close settings",
+    "cancel": "Cancel",
+    "save": "Save",
+    "hint": "⌘, to open settings",
+    "sync": {
+      "title": "Sync & Updates",
+      "description": "Configure background pulling and which update feed Tolaria follows. Stable only receives manually promoted releases, while Alpha follows every push to main.",
+      "pullInterval": "Pull interval (minutes)",
+      "releaseChannel": "Release channel",
+      "stable": "Stable",
+      "alpha": "Alpha"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Choose the app color mode used for Tolaria chrome, editor surfaces, menus, and dialogs.",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "autogit": {
+      "title": "AutoGit",
+      "description": "Automatically create conservative Git checkpoints after editing pauses or when the app is no longer active.",
+      "unavailable": "AutoGit is unavailable until the current vault is Git-enabled. Initialize Git for this vault first.",
+      "enable": "Enable AutoGit",
+      "enableDescription": "When enabled, Tolaria will commit and push saved local changes automatically after an idle pause or after the app becomes inactive.",
+      "idleThreshold": "Idle threshold (seconds)",
+      "inactiveGrace": "Inactive-app grace period (seconds)"
+    },
+    "titles": {
+      "title": "Titles & Filenames",
+      "description": "Choose whether Tolaria automatically syncs untitled note filenames from the first H1 title.",
+      "autoRename": "Auto-rename untitled notes from first H1",
+      "autoRenameDescription": "When enabled, Tolaria renames untitled-note files as soon as the first H1 becomes a real title. Turn this off to keep the filename unchanged until you rename it manually from the breadcrumb bar."
+    },
+    "aiAgents": {
+      "title": "AI Agents",
+      "description": "Choose which CLI AI agent Tolaria uses in the AI panel and command palette.",
+      "defaultAgent": "Default AI agent",
+      "installed": " (installed)",
+      "missing": " (missing)",
+      "ready": " is ready to use.",
+      "notInstalled": " is not installed yet. You can still select it now and install it later."
+    },
+    "workflow": {
+      "title": "Workflow",
+      "description": "Choose whether Tolaria shows the Inbox workflow, plus how it moves through items while you triage them.",
+      "organizeExplicitly": "Organize notes explicitly",
+      "organizeDescription": "When enabled, an Inbox section shows unorganized notes, and a toggle lets you mark notes as organized.",
+      "autoAdvance": "Auto-advance to next Inbox item",
+      "autoAdvanceDescription": "When enabled, marking an Inbox note as organized immediately opens the next visible Inbox note."
+    },
+    "privacy": {
+      "title": "Privacy & Telemetry",
+      "description": "Anonymous data helps us fix bugs and improve Tolaria. No vault content, note titles, or file paths are ever sent.",
+      "crashReporting": "Crash reporting",
+      "crashDescription": "Send anonymous error reports",
+      "analytics": "Usage analytics",
+      "analyticsDescription": "Share anonymous usage patterns"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the display language for Tolaria's interface.",
+      "displayLanguage": "Display language",
+      "followSystem": "Follow system",
+      "english": "English",
+      "chinese": "中文"
+    }
   }
 }
