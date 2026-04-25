@@ -1,6 +1,7 @@
 import { type ChangeEvent, type FormEvent, useCallback, useRef, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
+import i18next from '../i18n'
 import {
   Dialog,
   DialogContent,
@@ -59,7 +60,7 @@ function suggestedPathFromUrl(request: Pick<CloneRequest, 'url'>): string {
 
 function labelFromPath(request: Pick<CloneRequest, 'localPath'>): string {
   const trimmed = request.localPath.trim().replace(/\/+$/g, '')
-  return trimmed.split('/').pop() || 'Vault'
+  return trimmed.split('/').pop() || i18next.t('cloneVault.defaultVaultLabel')
 }
 
 function shouldSyncSuggestedPath(localPath: string, pathDirty: boolean, previousSuggestedPath: string): boolean {
@@ -71,7 +72,10 @@ async function attemptClone(request: CloneRequest): Promise<CloneAttemptResult> 
     await tauriCall<string>('clone_git_repo', request)
     return { ok: true }
   } catch (error) {
-    return { ok: false, errorMessage: `Clone failed: ${String(error)}` }
+    return {
+      ok: false,
+      errorMessage: i18next.t('cloneVault.cloneFailed', { error: String(error) }),
+    }
   }
 }
 

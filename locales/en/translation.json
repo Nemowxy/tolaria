@@ -201,7 +201,9 @@
     "cloningStatus": "Cloning repository… Tolaria will open the vault when git finishes.",
     "authHint": "SSH keys, the git credential manager, `gh auth`, and other system git auth methods all work.",
     "cloning": "Cloning...",
-    "cloneAndOpen": "Clone & Open"
+    "cloneAndOpen": "Clone & Open",
+    "defaultVaultLabel": "Vault",
+    "cloneFailed": "Clone failed: {{error}}"
   },
   "commitDialog": {
     "localTitle": "Commit",
@@ -274,7 +276,8 @@
     "repoUrlLabel": "Repository URL",
     "helpText": "Use an empty repository or one created from this vault. SSH keys, Git Credential Manager, and other system git auth methods all work.",
     "connecting": "Connecting...",
-    "connectRemote": "Connect Remote"
+    "connectRemote": "Connect Remote",
+    "connectError": "Could not connect that remote: {{error}}"
   },
   "noteRetargeting": {
     "changeNoteTypeTitle": "Change Note Type",

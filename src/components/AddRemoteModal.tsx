@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import i18next from '../i18n'
 import { invoke } from '@tauri-apps/api/core'
 import {
   Dialog,
@@ -65,7 +66,7 @@ async function getConnectErrorMessage({
 
     return result.message
   } catch (error) {
-    return `Could not connect that remote: ${String(error)}`
+    return i18next.t('addRemote.connectError', { error: String(error) })
   }
 }
 

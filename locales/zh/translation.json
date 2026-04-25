@@ -201,7 +201,9 @@
     "cloningStatus": "正在克隆仓库… git 完成后 Tolaria 将打开该 Vault。",
     "authHint": "SSH 密钥、git 凭据管理器、`gh auth` 及其他系统 git 身份验证方式均可使用。",
     "cloning": "克隆中...",
-    "cloneAndOpen": "克隆并打开"
+    "cloneAndOpen": "克隆并打开",
+    "defaultVaultLabel": "Vault",
+    "cloneFailed": "克隆失败：{{error}}"
   },
   "commitDialog": {
     "localTitle": "提交",
@@ -274,7 +276,8 @@
     "repoUrlLabel": "仓库 URL",
     "helpText": "使用空仓库或从此 Vault 创建的仓库。SSH 密钥、Git Credential Manager 及其他系统 git 身份验证方式均可使用。",
     "connecting": "连接中...",
-    "connectRemote": "连接远程仓库"
+    "connectRemote": "连接远程仓库",
+    "connectError": "无法连接该远程仓库：{{error}}"
   },
   "noteRetargeting": {
     "changeNoteTypeTitle": "更改笔记类型",
