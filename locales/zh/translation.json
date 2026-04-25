@@ -418,5 +418,134 @@
     "updateCheckFailed": "无法检查更新",
     "aiGuidanceRestored": "Tolaria AI 指导已恢复",
     "aiGuidanceRestoreFailed": "恢复 Tolaria AI 指导失败: {{error}}"
+  },
+  "feedback": {
+    "dialog": {
+      "title": "为 Tolaria 做贡献",
+      "description": "请选择最适合你参与方式的路径。任何形式的帮助都非常感谢。"
+    },
+    "featureRequests": {
+      "title": "功能建议",
+      "description": "请先在产品看板中搜索，若已有相似想法可先点赞，只有在确实是新点子时再创建新帖。",
+      "ctaLabel": "打开产品看板",
+      "label": "产品看板"
+    },
+    "discussions": {
+      "title": "讨论",
+      "description": "问题咨询、广泛讨论、想法交流，以及不属于具体 bug 报告的社区话题，请使用 GitHub Discussions。",
+      "ctaLabel": "打开 Discussions",
+      "label": "GitHub Discussions"
+    },
+    "contributeCode": {
+      "title": "贡献代码",
+      "description": "欢迎提交小而聚焦的 Pull Request。请先查看已规划或进行中的工作，确保在正确方向上贡献。",
+      "ctaLabel": "打开 Pull Requests",
+      "label": "GitHub Pull Requests",
+      "secondaryCtaLabel": "打开贡献指南",
+      "secondaryLabel": "贡献指南"
+    },
+    "bugReport": {
+      "title": "报告 bug",
+      "description": "请说明复现步骤、预期结果和实际结果。先确认是否已有重复 bug，并附上已脱敏的诊断信息。",
+      "ctaLabel": "打开 GitHub Issues",
+      "label": "GitHub Issues",
+      "copySanitizedDiagnostics": "复制脱敏诊断信息",
+      "diagnosticsCopiedButton": "诊断信息已复制",
+      "diagnosticsCopied": "诊断信息已复制。",
+      "clipboardUnavailable": "当前无法访问剪贴板。你仍然可以直接打开 GitHub Issues。"
+    },
+    "linkFallback": {
+      "couldNotOpen": "无法自动打开 {{label}}。",
+      "openManually": "请手动打开以下 URL："
+    }
+  },
+  "telemetry": {
+    "title": "帮助改进 Tolaria",
+    "body": "发送匿名崩溃报告，帮助我们更快修复问题。不包含 vault 内容、个人数据或行为跟踪。",
+    "whatWeCollect": "我们会收集：",
+    "collectStackTraces": "错误堆栈信息（JS 与 Rust）",
+    "collectAppVersion": "应用版本、操作系统和架构信息",
+    "whatWeNeverCollect": "我们绝不会收集：",
+    "neverCollectVault": "vault 内容、笔记标题或文件路径",
+    "neverCollectPersonal": "个人数据或 IP 地址",
+    "noThanks": "不用了",
+    "allowReporting": "允许匿名报告",
+    "changeAnytime": "你可以随时在设置中更改此项。"
+  },
+  "mcpSetup": {
+    "connected": {
+      "title": "管理外部 AI 工具",
+      "description": "Tolaria 已为此 vault 连接外部 AI 工具。你可以重新连接以刷新配置，或断开连接以从这些第三方配置文件中移除 Tolaria。",
+      "primaryLabel": "重新连接外部 AI 工具",
+      "secondaryLabel": "断开连接"
+    },
+    "notConnected": {
+      "title": "设置外部 AI 工具",
+      "description": "Tolaria 可以为此 vault 添加 MCP server 到外部 AI 工具，但在你确认之前不会修改任何第三方配置文件。",
+      "primaryLabel": "连接外部 AI 工具"
+    },
+    "body": {
+      "entryFilesPrefix": "确认此操作后，将在以下位置写入或更新 Tolaria 的唯一",
+      "entryFilesSuffix": "MCP 条目：",
+      "explanationPrefix": "Claude Code CLI 会读取",
+      "explanationSuffix": "，同时 Tolaria 也会刷新旧版 Claude MCP 文件，以兼容较早的配置。取消不会改动任何文件，重新连接是幂等操作，断开连接会再次移除 Tolaria 条目。"
+    },
+    "cancel": "取消",
+    "connecting": "连接中…",
+    "disconnecting": "断开中…"
+  },
+  "onboarding": {
+    "aiAgents": {
+      "checking": {
+        "title": "正在检查 AI 代理",
+        "description": "正在检查此设备上可用的 AI 代理。"
+      },
+      "notDetected": {
+        "title": "未检测到 AI 代理",
+        "description": "安装本地 CLI AI 代理后，Tolaria 的体验会更完整。"
+      },
+      "ready": {
+        "title": "AI 代理已就绪",
+        "description": "你的 AI 代理已可在 Tolaria 中使用。"
+      },
+      "statusReady": "{{label}}{{version}} 已就绪。",
+      "statusMissing": "{{label}} 尚未安装。",
+      "badgeInstalled": "已安装",
+      "badgeMissing": "缺失",
+      "claudeNotDetected": "未检测到 Claude Code",
+      "claudeInstallHint": "安装 Claude Code，或在不安装的情况下继续。",
+      "installButton": "安装 {{label}}",
+      "continue": "继续",
+      "continueWithout": "不安装也继续"
+    },
+    "claudeCode": {
+      "installed": {
+        "title": "已检测到 Claude Code",
+        "description": "Tolaria 的 AI 功能已可使用。"
+      },
+      "missing": {
+        "title": "未检测到 Claude Code",
+        "description": "安装 AI 编码代理后，Tolaria 的体验会更完整。",
+        "installHint": "安装 Claude Code 以启用 AI 驱动的笔记管理。"
+      },
+      "checkingStatus": {
+        "title": "正在检查 Claude Code",
+        "description": "正在检查此设备上是否可用 Claude Code。"
+      },
+      "installButton": "安装 Claude Code",
+      "continue": "继续",
+      "continueWithout": "不安装也继续",
+      "checking": "检查中…"
+    }
+  },
+  "noteListChanges": {
+    "restoreNote": "恢复笔记",
+    "discardChanges": "放弃更改",
+    "restoreDescription": "要从 Git 恢复 <strong>{{name}}</strong> 吗？",
+    "discardDescription": "要放弃 <strong>{{name}}</strong> 的更改吗？此操作无法撤销。",
+    "thisFile": "该文件",
+    "cancel": "取消",
+    "restore": "恢复",
+    "discard": "放弃"
   }
 }

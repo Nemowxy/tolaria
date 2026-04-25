@@ -420,5 +420,134 @@
     "updateCheckFailed": "Could not check for updates",
     "aiGuidanceRestored": "Tolaria AI guidance restored",
     "aiGuidanceRestoreFailed": "Failed to restore Tolaria AI guidance: {{error}}"
+  },
+  "feedback": {
+    "dialog": {
+      "title": "Contribute to Tolaria",
+      "description": "Pick the path that fits what you want to do! Any type of help is appreciated"
+    },
+    "featureRequests": {
+      "title": "Feature requests",
+      "description": "Search on the product board first, upvote an existing idea if already there, and only create a new post when genuinely new!",
+      "ctaLabel": "Open Product Board",
+      "label": "Product Board"
+    },
+    "discussions": {
+      "title": "Discussions",
+      "description": "Use GitHub Discussions for questions, broader conversations, idea sharing, and community context that is not a concrete bug report.",
+      "ctaLabel": "Open Discussions",
+      "label": "GitHub Discussions"
+    },
+    "contributeCode": {
+      "title": "Contribute code",
+      "description": "Small, focused pull requests are welcome. Check planned or in-progress work first so you are building in the right place.",
+      "ctaLabel": "Open Pull Requests",
+      "label": "GitHub Pull Requests",
+      "secondaryCtaLabel": "Open Contributing Guide",
+      "secondaryLabel": "the contributing guide"
+    },
+    "bugReport": {
+      "title": "Report a bug",
+      "description": "Explain how to reproduce, what you expected, and what actually happened. Check for duplicate bugs first. Attach the sanitized diagnostic bundle please!",
+      "ctaLabel": "Open GitHub Issues",
+      "label": "GitHub Issues",
+      "copySanitizedDiagnostics": "Copy sanitized diagnostics",
+      "diagnosticsCopiedButton": "Diagnostics copied",
+      "diagnosticsCopied": "Diagnostics copied.",
+      "clipboardUnavailable": "Clipboard access is unavailable right now. You can still open GitHub Issues directly."
+    },
+    "linkFallback": {
+      "couldNotOpen": "Couldn't open {{label}} automatically.",
+      "openManually": "Open this URL manually instead:"
+    }
+  },
+  "telemetry": {
+    "title": "Help improve Tolaria",
+    "body": "Send anonymous crash reports to help us fix bugs faster. No vault content, no personal data, no tracking.",
+    "whatWeCollect": "What we collect:",
+    "collectStackTraces": "Stack traces from errors (JS & Rust)",
+    "collectAppVersion": "App version, OS, and architecture",
+    "whatWeNeverCollect": "What we never collect:",
+    "neverCollectVault": "No vault content, note titles, or file paths",
+    "neverCollectPersonal": "No personal data or IP addresses",
+    "noThanks": "No thanks",
+    "allowReporting": "Allow anonymous reporting",
+    "changeAnytime": "You can change this anytime in Settings."
+  },
+  "mcpSetup": {
+    "connected": {
+      "title": "Manage External AI Tools",
+      "description": "Tolaria is already connected to external AI tools for this vault. Reconnect to refresh the configuration, or disconnect to remove Tolaria from those third-party config files.",
+      "primaryLabel": "Reconnect External AI Tools",
+      "secondaryLabel": "Disconnect"
+    },
+    "notConnected": {
+      "title": "Set Up External AI Tools",
+      "description": "Tolaria can add its MCP server to external AI tools for this vault, but it will not touch third-party config files until you confirm here.",
+      "primaryLabel": "Connect External AI Tools"
+    },
+    "body": {
+      "entryFilesPrefix": "Confirming this action will write or update Tolaria's single",
+      "entryFilesSuffix": "MCP entry in:",
+      "explanationPrefix": "Claude Code CLI reads",
+      "explanationSuffix": ", while Tolaria also refreshes the legacy Claude MCP file for compatibility with older setups. Cancel leaves all files untouched, reconnect is idempotent, and disconnect removes Tolaria's entry again."
+    },
+    "cancel": "Cancel",
+    "connecting": "Connecting…",
+    "disconnecting": "Disconnecting…"
+  },
+  "onboarding": {
+    "aiAgents": {
+      "checking": {
+        "title": "Checking AI agents",
+        "description": "Checking which AI agents are available on this machine."
+      },
+      "notDetected": {
+        "title": "No AI agents detected",
+        "description": "Tolaria works best with a local CLI AI agent installed."
+      },
+      "ready": {
+        "title": "AI agents ready",
+        "description": "Your AI agents are ready to use in Tolaria."
+      },
+      "statusReady": "{{label}}{{version}} is ready.",
+      "statusMissing": "{{label}} is not installed yet.",
+      "badgeInstalled": "Installed",
+      "badgeMissing": "Missing",
+      "claudeNotDetected": "Claude Code not detected",
+      "claudeInstallHint": "Install Claude Code or continue without it.",
+      "installButton": "Install {{label}}",
+      "continue": "Continue",
+      "continueWithout": "Continue without it"
+    },
+    "claudeCode": {
+      "installed": {
+        "title": "Claude Code detected",
+        "description": "Tolaria's AI features are ready to use."
+      },
+      "missing": {
+        "title": "Claude Code not detected",
+        "description": "Tolaria works best with an AI coding agent installed.",
+        "installHint": "Install Claude Code to enable AI-powered note management."
+      },
+      "checkingStatus": {
+        "title": "Checking for Claude Code",
+        "description": "Checking whether Claude Code is available on this machine."
+      },
+      "installButton": "Install Claude Code",
+      "continue": "Continue",
+      "continueWithout": "Continue without it",
+      "checking": "Checking…"
+    }
+  },
+  "noteListChanges": {
+    "restoreNote": "Restore note",
+    "discardChanges": "Discard changes",
+    "restoreDescription": "Restore <strong>{{name}}</strong> from Git?",
+    "discardDescription": "Discard changes to <strong>{{name}}</strong>? This cannot be undone.",
+    "thisFile": "this file",
+    "cancel": "Cancel",
+    "restore": "Restore",
+    "discard": "Discard"
   }
 }

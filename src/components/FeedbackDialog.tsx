@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Megaphone } from '@phosphor-icons/react'
 import { ArrowUpRight, Bug, Check, Copy, GitPullRequest, Lightbulb, MessagesSquare } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -33,6 +34,7 @@ import { takeFeedbackDialogOpener } from '../lib/feedbackDialogOpener'
 import { useBuildNumber } from '../hooks/useBuildNumber'
 import { APP_COMMAND_EVENT_NAME, APP_COMMAND_IDS } from '../hooks/appCommandDispatcher'
 import { openExternalUrl } from '../utils/url'
+import i18next from '../i18n'
 
 interface FeedbackDialogProps {
   open: boolean
@@ -95,40 +97,42 @@ const CONTRIBUTION_BUTTON_CLASSES: Record<ContributionTone, string> = {
   red: 'border-[var(--accent-red)] hover:bg-[var(--accent-red-light)] [&_svg]:text-[var(--accent-red)]',
 }
 
-const CONTRIBUTION_PATHS: ContributionPath[] = [
-  {
-    title: 'Feature requests',
-    description: 'Search on the product board first, upvote an existing idea if already there, and only create a new post when genuinely new!',
-    ctaLabel: 'Open Product Board',
-    label: 'Product Board',
-    url: TOLARIA_PRODUCT_BOARD_URL,
-    icon: Lightbulb,
-    tone: 'green',
-  },
-  {
-    title: 'Discussions',
-    description: 'Use GitHub Discussions for questions, broader conversations, idea sharing, and community context that is not a concrete bug report.',
-    ctaLabel: 'Open Discussions',
-    label: 'GitHub Discussions',
-    url: TOLARIA_GITHUB_DISCUSSIONS_URL,
-    icon: MessagesSquare,
-    tone: 'purple',
-  },
-  {
-    title: 'Contribute code',
-    description: 'Small, focused pull requests are welcome. Check planned or in-progress work first so you are building in the right place.',
-    ctaLabel: 'Open Pull Requests',
-    label: 'GitHub Pull Requests',
-    url: TOLARIA_GITHUB_PULL_REQUESTS_URL,
-    icon: GitPullRequest,
-    tone: 'yellow',
-    secondaryLink: {
-      ctaLabel: 'Open Contributing Guide',
-      label: 'the contributing guide',
-      url: TOLARIA_GITHUB_CONTRIBUTING_URL,
+function getContributionPaths(): ContributionPath[] {
+  return [
+    {
+      title: i18next.t('feedback.featureRequests.title'),
+      description: i18next.t('feedback.featureRequests.description'),
+      ctaLabel: i18next.t('feedback.featureRequests.ctaLabel'),
+      label: i18next.t('feedback.featureRequests.label'),
+      url: TOLARIA_PRODUCT_BOARD_URL,
+      icon: Lightbulb,
+      tone: 'green',
     },
-  },
-]
+    {
+      title: i18next.t('feedback.discussions.title'),
+      description: i18next.t('feedback.discussions.description'),
+      ctaLabel: i18next.t('feedback.discussions.ctaLabel'),
+      label: i18next.t('feedback.discussions.label'),
+      url: TOLARIA_GITHUB_DISCUSSIONS_URL,
+      icon: MessagesSquare,
+      tone: 'purple',
+    },
+    {
+      title: i18next.t('feedback.contributeCode.title'),
+      description: i18next.t('feedback.contributeCode.description'),
+      ctaLabel: i18next.t('feedback.contributeCode.ctaLabel'),
+      label: i18next.t('feedback.contributeCode.label'),
+      url: TOLARIA_GITHUB_PULL_REQUESTS_URL,
+      icon: GitPullRequest,
+      tone: 'yellow',
+      secondaryLink: {
+        ctaLabel: i18next.t('feedback.contributeCode.secondaryCtaLabel'),
+        label: i18next.t('feedback.contributeCode.secondaryLabel'),
+        url: TOLARIA_GITHUB_CONTRIBUTING_URL,
+      },
+    },
+  ]
+}
 
 function ContributionLinkButton({
   label,
@@ -193,6 +197,8 @@ function ContributionCard({
 }
 
 function LinkFallbackBanner({ linkFallback }: { linkFallback: LinkFallback | null }) {
+  const { t } = useTranslation()
+
   if (!linkFallback) return null
 
   return (
@@ -204,8 +210,8 @@ function LinkFallbackBanner({ linkFallback }: { linkFallback: LinkFallback | nul
         color: 'var(--feedback-warning-text)',
       }}
     >
-      <p className="font-medium">Couldn’t open {linkFallback.label} automatically.</p>
-      <p className="mt-1">Open this URL manually instead:</p>
+      <p className="font-medium">{t('feedback.linkFallback.couldNotOpen', { label: linkFallback.label })}</p>
+      <p className="mt-1">{t('feedback.linkFallback.openManually')}</p>
       <p className="mt-2 break-all rounded-md bg-popover px-3 py-2 font-mono text-xs text-foreground">
         {linkFallback.url}
       </p>
@@ -214,7 +220,7 @@ function LinkFallbackBanner({ linkFallback }: { linkFallback: LinkFallback | nul
 }
 
 function getCopyDiagnosticsLabel(copyState: 'idle' | 'copied' | 'failed') {
-  return copyState === 'copied' ? 'Diagnostics copied' : 'Copy sanitized diagnostics'
+  return copyState === 'copied' ? i18next.t('feedback.bugReport.diagnosticsCopiedButton') : i18next.t('feedback.bugReport.copySanitizedDiagnostics')
 }
 
 function BugReportActions({
@@ -239,11 +245,11 @@ function BugReportActions({
         {copyState === 'copied' ? <Check size={14} /> : <Copy size={14} />}
       </Button>
       {copyState === 'copied' ? (
-        <p className="text-xs font-medium text-foreground">Diagnostics copied.</p>
+        <p className="text-xs font-medium text-foreground">{i18next.t('feedback.bugReport.diagnosticsCopied')}</p>
       ) : null}
       {copyState === 'failed' ? (
         <p className="text-xs font-medium text-[var(--feedback-warning-text)]">
-          Clipboard access is unavailable right now. You can still open GitHub Issues directly.
+          {i18next.t('feedback.bugReport.clipboardUnavailable')}
         </p>
       ) : null}
     </div>
@@ -335,9 +341,11 @@ function ContributionGrid({
   canCopyDiagnostics: boolean
   onCopyDiagnostics: () => void
 }) {
+  const contributionPaths = getContributionPaths()
+
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {CONTRIBUTION_PATHS.map((path, index) => {
+      {contributionPaths.map((path, index) => {
         const secondaryLink = path.secondaryLink
 
         return (
@@ -362,12 +370,12 @@ function ContributionGrid({
         )
       })}
       <ContributionCard
-        title="Report a bug"
-        description="Explain how to reproduce, what you expected, and what actually happened. Check for duplicate bugs first. Attach the sanitized diagnostic bundle please!"
-        ctaLabel="Open GitHub Issues"
+        title={i18next.t('feedback.bugReport.title')}
+        description={i18next.t('feedback.bugReport.description')}
+        ctaLabel={i18next.t('feedback.bugReport.ctaLabel')}
         icon={Bug}
         tone="red"
-        onAction={() => onOpenLink('GitHub Issues', TOLARIA_GITHUB_ISSUES_URL)}
+        onAction={() => onOpenLink(i18next.t('feedback.bugReport.label'), TOLARIA_GITHUB_ISSUES_URL)}
         secondaryAction={(
           <BugReportActions
             copyState={copyState}
@@ -386,6 +394,7 @@ export function FeedbackDialog({
   buildNumber,
   releaseChannel,
 }: FeedbackDialogProps) {
+  const { t } = useTranslation()
   const detectedBuildNumber = useBuildNumber()
   const resolvedBuildNumber = buildNumber ?? detectedBuildNumber
   const diagnosticsBundle = useMemo(
@@ -415,10 +424,10 @@ export function FeedbackDialog({
         <DialogHeader className="space-y-2">
           <DialogTitle className="flex items-center gap-2">
             <Megaphone size={18} weight="duotone" />
-            Contribute to Tolaria
+            {t('feedback.dialog.title')}
           </DialogTitle>
           <DialogDescription>
-            Pick the path that fits what you want to do! Any type of help is appreciated
+            {t('feedback.dialog.description')}
           </DialogDescription>
         </DialogHeader>
 

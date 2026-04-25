@@ -1,4 +1,6 @@
 import { ArrowUpRight, Bot, CheckCircle2, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18next from '../i18n'
 import type { ClaudeCodeStatus } from '../hooks/useClaudeCodeStatus'
 import { openExternalUrl } from '../utils/url'
 import { Button } from './ui/button'
@@ -15,26 +17,26 @@ function getPromptCopy(status: ClaudeCodeStatus) {
   if (status === 'installed') {
     return {
       accentClassName: 'bg-[var(--feedback-success-bg)] text-[var(--feedback-success-text)]',
-      description: "Tolaria's AI features are ready to use.",
+      description: i18next.t('onboarding.claudeCode.installed.description'),
       icon: <CheckCircle2 className="size-7" />,
-      title: 'Claude Code detected',
+      title: i18next.t('onboarding.claudeCode.installed.title'),
     }
   }
 
   if (status === 'missing') {
     return {
       accentClassName: 'bg-[var(--feedback-warning-bg)] text-[var(--feedback-warning-text)]',
-      description: 'Tolaria works best with an AI coding agent installed.',
+      description: i18next.t('onboarding.claudeCode.missing.description'),
       icon: <Bot className="size-7" />,
-      title: 'Claude Code not detected',
+      title: i18next.t('onboarding.claudeCode.missing.title'),
     }
   }
 
   return {
     accentClassName: 'bg-muted text-muted-foreground',
-    description: 'Checking whether Claude Code is available on this machine.',
+    description: i18next.t('onboarding.claudeCode.checkingStatus.description'),
     icon: <Loader2 className="size-7 animate-spin" />,
-    title: 'Checking for Claude Code',
+    title: i18next.t('onboarding.claudeCode.checkingStatus.title'),
   }
 }
 
@@ -42,6 +44,7 @@ export function ClaudeCodeOnboardingPrompt({
   status,
   onContinue,
 }: ClaudeCodeOnboardingPromptProps) {
+  const { t } = useTranslation()
   const copy = getPromptCopy(status)
 
   return (
@@ -69,7 +72,7 @@ export function ClaudeCodeOnboardingPrompt({
         <CardContent className="space-y-3 text-center">
           {status === 'missing' && (
             <p className="text-sm leading-6 text-muted-foreground">
-              Install Claude Code to enable AI-powered note management.
+              {t('onboarding.claudeCode.missing.installHint')}
             </p>
           )}
         </CardContent>
@@ -82,7 +85,7 @@ export function ClaudeCodeOnboardingPrompt({
               onClick={() => void openExternalUrl(CLAUDE_CODE_INSTALL_URL)}
               data-testid="claude-onboarding-install"
             >
-              Install Claude Code
+              {t('onboarding.claudeCode.installButton')}
               <ArrowUpRight className="size-4" />
             </Button>
           )}
@@ -92,7 +95,7 @@ export function ClaudeCodeOnboardingPrompt({
             disabled={status === 'checking'}
             data-testid="claude-onboarding-continue"
           >
-            {status === 'missing' ? 'Continue without it' : status === 'installed' ? 'Continue' : 'Checking…'}
+            {status === 'missing' ? t('onboarding.claudeCode.continueWithout') : status === 'installed' ? t('onboarding.claudeCode.continue') : t('onboarding.claudeCode.checking')}
           </Button>
         </CardFooter>
       </Card>

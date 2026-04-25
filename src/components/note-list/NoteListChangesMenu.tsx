@@ -5,6 +5,7 @@ import {
   useRef,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 import type { ModifiedFile, VaultEntry } from '../../types'
 import {
   Dialog,
@@ -27,6 +28,7 @@ export function useChangesContextMenu({
   onDiscardFile,
   modifiedFiles,
 }: ChangesContextMenuParams) {
+  const { t } = useTranslation()
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; entry: VaultEntry } | null>(null)
   const [actionTarget, setActionTarget] = useState<{
     entry: VaultEntry
@@ -76,7 +78,7 @@ export function useChangesContextMenu({
   }, [actionTarget, onDiscardFile])
 
   const menuActionTarget = ctxMenu ? resolveActionTarget(ctxMenu.entry) : null
-  const menuActionLabel = menuActionTarget?.action === 'restore' ? 'Restore note' : 'Discard changes'
+  const menuActionLabel = menuActionTarget?.action === 'restore' ? t('noteListChanges.restoreNote') : t('noteListChanges.discardChanges')
 
   const contextMenuNode = ctxMenu ? (
     <div
@@ -106,22 +108,34 @@ export function useChangesContextMenu({
         data-testid={actionTarget?.action === 'restore' ? 'restore-confirm-dialog' : 'discard-confirm-dialog'}
       >
         <DialogHeader>
-          <DialogTitle>{actionTarget?.action === 'restore' ? 'Restore note' : 'Discard changes'}</DialogTitle>
+          <DialogTitle>{actionTarget?.action === 'restore' ? t('noteListChanges.restoreNote') : t('noteListChanges.discardChanges')}</DialogTitle>
           <DialogDescription>
             {actionTarget?.action === 'restore'
-              ? <>Restore <strong>{actionTarget?.entry.filename ?? 'this file'}</strong> from Git?</>
-              : <>Discard changes to <strong>{actionTarget?.entry.title ?? 'this file'}</strong>? This cannot be undone.</>
+              ? (
+                <Trans
+                  i18nKey="noteListChanges.restoreDescription"
+                  values={{ name: actionTarget?.entry.filename ?? t('noteListChanges.thisFile') }}
+                  components={{ strong: <strong /> }}
+                />
+              )
+              : (
+                <Trans
+                  i18nKey="noteListChanges.discardDescription"
+                  values={{ name: actionTarget?.entry.title ?? t('noteListChanges.thisFile') }}
+                  components={{ strong: <strong /> }}
+                />
+              )
             }
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setActionTarget(null)}>Cancel</Button>
+          <Button variant="outline" onClick={() => setActionTarget(null)}>{t('noteListChanges.cancel')}</Button>
           <Button
             variant={actionTarget?.action === 'restore' ? 'default' : 'destructive'}
             onClick={handleChangeConfirm}
             data-testid={actionTarget?.action === 'restore' ? 'restore-confirm-button' : 'discard-confirm-button'}
           >
-            {actionTarget?.action === 'restore' ? 'Restore' : 'Discard'}
+            {actionTarget?.action === 'restore' ? t('noteListChanges.restore') : t('noteListChanges.discard')}
           </Button>
         </DialogFooter>
       </DialogContent>

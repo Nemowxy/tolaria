@@ -1,4 +1,5 @@
 import { ShieldCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { McpStatus } from '../hooks/useMcpStatus'
+import i18next from '../i18n'
 
 interface McpSetupDialogProps {
   open: boolean
@@ -26,18 +28,18 @@ function isConnected(status: McpStatus): boolean {
 function actionCopy(status: McpStatus) {
   if (isConnected(status)) {
     return {
-      description: 'Tolaria is already connected to external AI tools for this vault. Reconnect to refresh the configuration, or disconnect to remove Tolaria from those third-party config files.',
-      primaryLabel: 'Reconnect External AI Tools',
-      secondaryLabel: 'Disconnect',
-      title: 'Manage External AI Tools',
+      description: i18next.t('mcpSetup.connected.description'),
+      primaryLabel: i18next.t('mcpSetup.connected.primaryLabel'),
+      secondaryLabel: i18next.t('mcpSetup.connected.secondaryLabel'),
+      title: i18next.t('mcpSetup.connected.title'),
     }
   }
 
   return {
-    description: 'Tolaria can add its MCP server to external AI tools for this vault, but it will not touch third-party config files until you confirm here.',
-    primaryLabel: 'Connect External AI Tools',
+    description: i18next.t('mcpSetup.notConnected.description'),
+    primaryLabel: i18next.t('mcpSetup.notConnected.primaryLabel'),
     secondaryLabel: null,
-    title: 'Set Up External AI Tools',
+    title: i18next.t('mcpSetup.notConnected.title'),
   }
 }
 
@@ -49,6 +51,7 @@ export function McpSetupDialog({
   onConnect,
   onDisconnect,
 }: McpSetupDialogProps) {
+  const { t } = useTranslation()
   const copy = actionCopy(status)
   const connectBusy = busyAction === 'connect'
   const disconnectBusy = busyAction === 'disconnect'
@@ -67,7 +70,7 @@ export function McpSetupDialog({
 
         <div className="space-y-3 text-sm leading-6 text-muted-foreground">
           <p>
-            Confirming this action will write or update Tolaria&apos;s single <code className="rounded bg-muted px-1 py-0.5 text-xs">tolaria</code> MCP entry in:
+            {t('mcpSetup.body.entryFilesPrefix')} <code className="rounded bg-muted px-1 py-0.5 text-xs">tolaria</code> {t('mcpSetup.body.entryFilesSuffix')}
           </p>
           <div className="rounded-md border border-border bg-muted/30 px-3 py-3 font-mono text-xs text-foreground">
             <div>~/.claude.json</div>
@@ -75,13 +78,13 @@ export function McpSetupDialog({
             <div>~/.cursor/mcp.json</div>
           </div>
           <p>
-            Claude Code CLI reads <code className="rounded bg-muted px-1 py-0.5 text-xs">~/.claude.json</code>, while Tolaria also refreshes the legacy Claude MCP file for compatibility with older setups. Cancel leaves all files untouched, reconnect is idempotent, and disconnect removes Tolaria&apos;s entry again.
+            {t('mcpSetup.body.explanationPrefix')} <code className="rounded bg-muted px-1 py-0.5 text-xs">~/.claude.json</code>{t('mcpSetup.body.explanationSuffix')}
           </p>
         </div>
 
         <DialogFooter className="flex-row items-center justify-end gap-2 sm:justify-end">
           <Button type="button" variant="outline" onClick={onClose} disabled={buttonsDisabled}>
-            Cancel
+            {t('mcpSetup.cancel')}
           </Button>
           {copy.secondaryLabel ? (
             <Button
@@ -91,7 +94,7 @@ export function McpSetupDialog({
               disabled={buttonsDisabled}
               data-testid="mcp-setup-disconnect"
             >
-              {disconnectBusy ? 'Disconnecting…' : copy.secondaryLabel}
+              {disconnectBusy ? t('mcpSetup.disconnecting') : copy.secondaryLabel}
             </Button>
           ) : null}
           <Button
@@ -101,7 +104,7 @@ export function McpSetupDialog({
             disabled={buttonsDisabled}
             data-testid="mcp-setup-connect"
           >
-            {connectBusy ? 'Connecting…' : copy.primaryLabel}
+            {connectBusy ? t('mcpSetup.connecting') : copy.primaryLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

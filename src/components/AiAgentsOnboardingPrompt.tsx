@@ -1,4 +1,6 @@
 import { ArrowUpRight, Bot, CheckCircle2, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18next from '../i18n'
 import {
   AI_AGENT_DEFINITIONS,
   getAiAgentDefinition,
@@ -20,26 +22,26 @@ function getPromptCopy(statuses: AiAgentsStatus) {
   if (isAiAgentsStatusChecking(statuses)) {
     return {
       accentClassName: 'bg-muted text-muted-foreground',
-      description: 'Checking which AI agents are available on this machine.',
+      description: i18next.t('onboarding.aiAgents.checking.description'),
       icon: <Loader2 className="size-7 animate-spin" />,
-      title: 'Checking AI agents',
+      title: i18next.t('onboarding.aiAgents.checking.title'),
     }
   }
 
   if (!hasAnyInstalledAiAgent(statuses)) {
     return {
       accentClassName: 'bg-[var(--feedback-warning-bg)] text-[var(--feedback-warning-text)]',
-      description: 'Tolaria works best with a local CLI AI agent installed.',
+      description: i18next.t('onboarding.aiAgents.notDetected.description'),
       icon: <Bot className="size-7" />,
-      title: 'No AI agents detected',
+      title: i18next.t('onboarding.aiAgents.notDetected.title'),
     }
   }
 
   return {
     accentClassName: 'bg-[var(--feedback-success-bg)] text-[var(--feedback-success-text)]',
-    description: 'Your AI agents are ready to use in Tolaria.',
+    description: i18next.t('onboarding.aiAgents.ready.description'),
     icon: <CheckCircle2 className="size-7" />,
-    title: 'AI agents ready',
+    title: i18next.t('onboarding.aiAgents.ready.title'),
   }
 }
 
@@ -58,14 +60,17 @@ function AgentStatusList({ statuses }: { statuses: AiAgentsStatus }) {
               <div className="font-medium text-foreground">{definition.label}</div>
               <div className="text-xs text-muted-foreground">
                 {ready
-                  ? `${definition.label}${status.version ? ` ${status.version}` : ''} is ready.`
-                  : `${definition.label} is not installed yet.`}
+                  ? i18next.t('onboarding.aiAgents.statusReady', {
+                    label: definition.label,
+                    version: status.version ? ` ${status.version}` : '',
+                  })
+                  : i18next.t('onboarding.aiAgents.statusMissing', { label: definition.label })}
               </div>
             </div>
             <span
               className={`rounded-full px-2 py-1 text-[11px] font-medium ${ready ? 'bg-[var(--feedback-success-bg)] text-[var(--feedback-success-text)]' : 'bg-[var(--feedback-warning-bg)] text-[var(--feedback-warning-text)]'}`}
             >
-              {ready ? 'Installed' : 'Missing'}
+              {ready ? i18next.t('onboarding.aiAgents.badgeInstalled') : i18next.t('onboarding.aiAgents.badgeMissing')}
             </span>
           </div>
         )
@@ -78,6 +83,7 @@ export function AiAgentsOnboardingPrompt({
   statuses,
   onContinue,
 }: AiAgentsOnboardingPromptProps) {
+  const { t } = useTranslation()
   const copy = getPromptCopy(statuses)
   const showLegacyClaudeCompatibility = statuses.claude_code.status !== 'installed'
   const missingAgents = AI_AGENT_DEFINITIONS.filter((definition) => statuses[definition.id].status === 'missing')
@@ -109,9 +115,9 @@ export function AiAgentsOnboardingPrompt({
               className="rounded-lg border border-[var(--feedback-warning-border)] bg-[var(--feedback-warning-bg)] px-4 py-3 text-left"
               data-testid="claude-onboarding-screen"
             >
-              <div className="text-sm font-medium text-[var(--feedback-warning-text)]">Claude Code not detected</div>
+              <div className="text-sm font-medium text-[var(--feedback-warning-text)]">{t('onboarding.aiAgents.claudeNotDetected')}</div>
               <p className="mt-1 text-xs leading-5 text-[var(--feedback-warning-text)]">
-                Install Claude Code or continue without it.
+                {t('onboarding.aiAgents.claudeInstallHint')}
               </p>
             </div>
           ) : null}
@@ -127,7 +133,7 @@ export function AiAgentsOnboardingPrompt({
               onClick={() => void openExternalUrl(getAiAgentDefinition(definition.id).installUrl)}
               data-testid={`ai-agents-onboarding-install-${definition.id}`}
             >
-              Install {definition.label}
+              {t('onboarding.aiAgents.installButton', { label: definition.label })}
               <ArrowUpRight className="size-4" />
             </Button>
           ))}
@@ -138,7 +144,7 @@ export function AiAgentsOnboardingPrompt({
               disabled={isAiAgentsStatusChecking(statuses)}
               data-testid={showLegacyClaudeCompatibility ? 'claude-onboarding-continue' : undefined}
             >
-              {hasAnyInstalledAiAgent(statuses) ? 'Continue' : 'Continue without it'}
+              {hasAnyInstalledAiAgent(statuses) ? t('onboarding.aiAgents.continue') : t('onboarding.aiAgents.continueWithout')}
             </Button>
           </div>
         </CardFooter>

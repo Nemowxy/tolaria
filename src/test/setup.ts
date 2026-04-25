@@ -67,7 +67,80 @@ vi.mock('react-i18next', async () => {
         changeLanguage: vi.fn(),
       },
     }),
-    Trans: ({ children }: { children: ReactNode }) => children,
+    Trans: ({ i18nKey, values, components, children }: {
+      i18nKey?: string
+      values?: Record<string, unknown>
+      components?: Record<string, ReactNode>
+      children?: ReactNode
+    }) => {
+      if (!i18nKey) return children
+
+      const keys = i18nKey.split('.')
+      let value: unknown = enTranslations.default
+
+      // Navigate to the translation value
+      for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+          value = (value as Record<string, unknown>)[k]
+        } else {
+          return i18nKey
+        }
+      }
+
+      if (typeof value !== 'string') return i18nKey
+
+      // Handle interpolation with components (e.g., <strong>{{name}}</strong>)
+      let result: ReactNode = value
+      if (values) {
+        result = Object.entries(values).reduce(
+          (str, [key, val]) => {
+            if (typeof str !== 'string') return str
+            return str.replace(new RegExp(`{{${key}}}`, 'g'), String(val))
+          },
+          result as string
+        )
+      }
+
+      // Handle component interpolation (e.g., <strong>text</strong>)
+      if (components && typeof result === 'string') {
+        const parts: ReactNode[] = []
+        const remaining = result
+        let key = 0
+
+        // Simple regex to match <tag>content</tag>
+        const tagRegex = /<(\w+)>(.*?)<\/\1>/g
+        let lastIndex = 0
+        let match: RegExpExecArray | null
+
+        while ((match = tagRegex.exec(result)) !== null) {
+          // Add text before the tag
+          if (match.index > lastIndex) {
+            parts.push(remaining.slice(lastIndex, match.index))
+          }
+
+          const [, tagName, content] = match
+          const component = components[tagName]
+
+          if (component && typeof component === 'object' && 'type' in component) {
+            // Clone the component with the content as children
+            parts.push(createElement((component as { type: ComponentType }).type, { key: key++ }, content))
+          } else {
+            parts.push(content)
+          }
+
+          lastIndex = match.index + match[0].length
+        }
+
+        // Add remaining text
+        if (lastIndex < result.length) {
+          parts.push(result.slice(lastIndex))
+        }
+
+        return parts.length > 0 ? createElement('span', null, ...parts) : result
+      }
+
+      return result
+    },
   }
 })
 
