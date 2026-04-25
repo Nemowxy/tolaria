@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InboxPeriod } from '../../types'
 
 interface InboxFilterPillsProps {
@@ -8,15 +9,19 @@ interface InboxFilterPillsProps {
   position?: 'top' | 'bottom'
 }
 
-const PILLS: { value: InboxPeriod; label: string }[] = [
-  { value: 'week', label: 'Week' },
-  { value: 'month', label: 'Month' },
-  { value: 'all', label: 'All' },
-]
+function getPills(t: (key: string) => string): { value: InboxPeriod; label: string }[] {
+  return [
+    { value: 'week', label: t('inbox.week') },
+    { value: 'month', label: t('inbox.month') },
+    { value: 'all', label: t('inbox.all') },
+  ]
+}
 
 const BOTTOM_GRADIENT = 'linear-gradient(to bottom, transparent 0%, var(--card) 30%, var(--card) 100%)'
 
 function InboxFilterPillsInner({ active, counts, onChange, position = 'top' }: InboxFilterPillsProps) {
+  const { t } = useTranslation()
+  const pills = getPills(t)
   const isBottom = position === 'bottom'
   return (
     <div
@@ -26,7 +31,7 @@ function InboxFilterPillsInner({ active, counts, onChange, position = 'top' }: I
       style={isBottom ? { background: BOTTOM_GRADIENT } : undefined}
       data-testid="inbox-filter-pills"
     >
-      {PILLS.map(({ value, label }) => (
+      {pills.map(({ value, label }) => (
         <button
           key={value}
           type="button"

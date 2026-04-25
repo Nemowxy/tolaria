@@ -143,5 +143,41 @@
       "english": "English",
       "chinese": "中文"
     }
+  },
+  "commandPalette": {
+    "placeholder": "输入命令...",
+    "noResults": "没有匹配的命令",
+    "navigate": "↑↓ 导航",
+    "select": "↵ 选择",
+    "close": "esc 关闭",
+    "aiMode": "{{agent}} 模式",
+    "send": "↵ 发送"
+  },
+  "aiPanel": {
+    "title": "AI 聊天",
+    "agentTitle": "AI 代理",
+    "notInstalled": " · 未安装",
+    "newChat": "新建 AI 聊天",
+    "closePanel": "关闭 AI 面板",
+    "sendMessage": "发送消息",
+    "linked": "+ {{count}} 个关联",
+    "notAvailable": "{{agent}} 在此设备上不可用",
+    "installHint": "请安装或在设置中切换默认 AI 代理",
+    "notInstalledPlaceholder": "{{agent}} 未安装。请在设置中打开 AI 代理。",
+    "askAboutNote": "询问关于此笔记...",
+    "askAgent": "向 AI 代理提问...",
+    "askAgentAboutNote": "向 {{agent}} 询问此笔记...",
+    "askAgentGeneric": "向 {{agent}} 提问...",
+    "emptyWithContext": "询问关于此笔记及其关联内容",
+    "emptyWithContextAgent": "向 {{agent}} 询问此笔记及其关联内容",
+    "emptyNoContext": "打开一个笔记，然后向 AI 提问",
+    "emptyNoContextAgent": "打开一个笔记，然后向 {{agent}} 提问",
+    "subtitleWithContext": "总结、发现联系、扩展想法",
+    "subtitleNoContext": "AI 将使用当前笔记作为上下文"
+  },
+  "inbox": {
+    "week": "本周",
+    "month": "本月",
+    "all": "全部"
   }
 }

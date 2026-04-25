@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18next from '../i18n'
 import { Robot, X, PaperPlaneRight, Plus, Link } from '@phosphor-icons/react'
 import { AiMessage } from './AiMessage'
 import { WikilinkChatInput } from './WikilinkChatInput'
@@ -52,14 +54,16 @@ function getComposerPlaceholder(
   hasContext: boolean,
 ): string {
   if (!agentReady) {
-    return `${agentLabel} is not installed. Open AI Agents in Settings.`
+    return i18next.t('aiPanel.notInstalledPlaceholder', { agent: agentLabel })
   }
 
   if (legacyCopy) {
-    return hasContext ? 'Ask about this note...' : 'Ask the AI agent...'
+    return hasContext ? i18next.t('aiPanel.askAboutNote') : i18next.t('aiPanel.askAgent')
   }
 
-  return hasContext ? `Ask ${agentLabel} about this note...` : `Ask ${agentLabel}...`
+  return hasContext
+    ? i18next.t('aiPanel.askAgentAboutNote', { agent: agentLabel })
+    : i18next.t('aiPanel.askAgentGeneric', { agent: agentLabel })
 }
 
 function AiPanelEmptyState({
@@ -68,6 +72,7 @@ function AiPanelEmptyState({
   hasContext,
   legacyCopy,
 }: Pick<AiPanelMessageHistoryProps, 'agentLabel' | 'agentReady' | 'hasContext' | 'legacyCopy'>) {
+  const { t } = useTranslation()
   if (!agentReady) {
     return (
       <div
@@ -76,10 +81,10 @@ function AiPanelEmptyState({
       >
         <Robot size={24} style={{ marginBottom: 8, opacity: 0.5 }} />
         <p style={{ fontSize: 13, margin: '0 0 4px' }}>
-          {agentLabel} is not available on this machine
+          {t('aiPanel.notAvailable', { agent: agentLabel })}
         </p>
         <p style={{ fontSize: 11, margin: 0, opacity: 0.6 }}>
-          Install it or switch the default AI agent in Settings
+          {t('aiPanel.installHint')}
         </p>
       </div>
     )
@@ -93,14 +98,14 @@ function AiPanelEmptyState({
       <Robot size={24} style={{ marginBottom: 8, opacity: 0.5 }} />
       <p style={{ fontSize: 13, margin: '0 0 4px' }}>
         {hasContext
-          ? legacyCopy ? 'Ask about this note and its linked context' : `Ask ${agentLabel} about this note and its linked context`
-          : legacyCopy ? 'Open a note, then ask the AI about it' : `Open a note, then ask ${agentLabel} about it`
+          ? legacyCopy ? t('aiPanel.emptyWithContext') : t('aiPanel.emptyWithContextAgent', { agent: agentLabel })
+          : legacyCopy ? t('aiPanel.emptyNoContext') : t('aiPanel.emptyNoContextAgent', { agent: agentLabel })
         }
       </p>
       <p style={{ fontSize: 11, margin: 0, opacity: 0.6 }}>
         {hasContext
-          ? 'Summarize, find connections, expand ideas'
-          : 'The AI will use the active note as context'
+          ? t('aiPanel.subtitleWithContext')
+          : t('aiPanel.subtitleNoContext')
         }
       </p>
     </div>
@@ -114,6 +119,7 @@ export function AiPanelHeader({
   onClose,
   onNewChat,
 }: AiPanelHeaderProps) {
+  const { t } = useTranslation()
   return (
     <div
       className="flex shrink-0 items-center border-b border-border"
@@ -122,27 +128,27 @@ export function AiPanelHeader({
       <Robot size={16} className="shrink-0 text-muted-foreground" />
       <div className="flex flex-1 flex-col overflow-hidden">
         <span className="text-muted-foreground" style={{ fontSize: 13, fontWeight: 600 }}>
-          {legacyCopy ? 'AI Chat' : 'AI Agent'}
+          {legacyCopy ? t('aiPanel.title') : t('aiPanel.agentTitle')}
         </span>
         {!legacyCopy && (
           <span className="truncate text-[11px] text-muted-foreground">
             {agentLabel}
-            {!agentReady ? ' · not installed' : ''}
+            {!agentReady ? t('aiPanel.notInstalled') : ''}
           </span>
         )}
       </div>
       <button
         className="shrink-0 border-none bg-transparent p-1 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
         onClick={onNewChat}
-        aria-label="New AI chat"
-        title="New AI chat"
+        aria-label={t('aiPanel.newChat')}
+        title={t('aiPanel.newChat')}
       >
         <Plus size={16} />
       </button>
       <button
         className="shrink-0 border-none bg-transparent p-1 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
         onClick={onClose}
-        title="Close AI panel"
+        title={t('aiPanel.closePanel')}
       >
         <X size={16} />
       </button>
@@ -151,6 +157,7 @@ export function AiPanelHeader({
 }
 
 export function AiPanelContextBar({ activeEntry, linkedCount }: AiPanelContextBarProps) {
+  const { t } = useTranslation()
   return (
     <div
       className="flex shrink-0 items-center border-b border-border text-muted-foreground"
@@ -160,7 +167,7 @@ export function AiPanelContextBar({ activeEntry, linkedCount }: AiPanelContextBa
       <Link size={12} className="shrink-0" />
       <span className="truncate" style={{ fontWeight: 500 }}>{activeEntry.title}</span>
       {linkedCount > 0 && (
-        <span style={{ opacity: 0.6 }}>+ {linkedCount} linked</span>
+        <span style={{ opacity: 0.6 }}>{t('aiPanel.linked', { count: linkedCount })}</span>
       )}
     </div>
   )
@@ -218,6 +225,7 @@ export function AiPanelComposer({
   onSend,
   onUnsupportedAiPaste,
 }: AiPanelComposerProps) {
+  const { t } = useTranslation()
   const composerDisabled = isActive || !agentReady
   const canSend = !composerDisabled && input.trim().length > 0
   const placeholder = getComposerPlaceholder(agentLabel, agentReady, legacyCopy, hasContext)
@@ -253,7 +261,7 @@ export function AiPanelComposer({
           style={sendButtonStyle}
           onClick={() => onSend(input, extractInlineWikilinkReferences(input, entries))}
           disabled={!canSend}
-          title="Send message"
+          title={t('aiPanel.sendMessage')}
           data-testid="agent-send"
         >
           <PaperPlaneRight size={16} />

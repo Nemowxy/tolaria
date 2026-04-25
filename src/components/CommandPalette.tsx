@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { VaultEntry } from '../types'
 import { fuzzyMatch } from '../utils/fuzzyMatch'
@@ -123,12 +124,13 @@ function CommandPaletteInput({
   query: string
   onChange: (value: string) => void
 }) {
+  const { t } = useTranslation()
   return (
     <input
       ref={inputRef}
       className="border-b border-border bg-transparent px-4 py-3 text-[15px] text-foreground outline-none placeholder:text-muted-foreground"
       type="text"
-      placeholder="Type a command..."
+      placeholder={t('commandPalette.placeholder')}
       value={query}
       onChange={(event) => onChange(event.target.value)}
     />
@@ -148,13 +150,14 @@ function CommandPaletteResults({
   onHover: (index: number) => void
   onSelect: (command: CommandAction) => void
 }) {
+  const { t } = useTranslation()
   const flatList = groups.flatMap((group) => group.items)
 
   if (flatList.length === 0) {
     return (
       <div className="flex-1 overflow-y-auto py-1" ref={listRef}>
         <div className="px-4 py-6 text-center text-[13px] text-muted-foreground">
-          No matching commands
+          {t('commandPalette.noResults')}
         </div>
       </div>
     )
@@ -206,11 +209,12 @@ function CommandPaletteFooter({
   aiMode: boolean
   aiAgentLabel?: string
 }) {
+  const { t } = useTranslation()
   return (
     <div className="flex items-center gap-4 border-t border-border px-4 py-1.5 text-[11px] text-muted-foreground">
-      <span>{aiMode ? `${aiAgentLabel} mode` : '↑↓ navigate'}</span>
-      <span>{aiMode ? '↵ send' : '↵ select'}</span>
-      <span>esc close</span>
+      <span>{aiMode ? t('commandPalette.aiMode', { agent: aiAgentLabel }) : t('commandPalette.navigate')}</span>
+      <span>{aiMode ? t('commandPalette.send') : t('commandPalette.select')}</span>
+      <span>{t('commandPalette.close')}</span>
     </div>
   )
 }

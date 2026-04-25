@@ -143,5 +143,41 @@
       "english": "English",
       "chinese": "中文"
     }
+  },
+  "commandPalette": {
+    "placeholder": "Type a command...",
+    "noResults": "No matching commands",
+    "navigate": "↑↓ navigate",
+    "select": "↵ select",
+    "close": "esc close",
+    "aiMode": "{{agent}} mode",
+    "send": "↵ send"
+  },
+  "aiPanel": {
+    "title": "AI Chat",
+    "agentTitle": "AI Agent",
+    "notInstalled": " · not installed",
+    "newChat": "New AI chat",
+    "closePanel": "Close AI panel",
+    "sendMessage": "Send message",
+    "linked": "+ {{count}} linked",
+    "notAvailable": "{{agent}} is not available on this machine",
+    "installHint": "Install it or switch the default AI agent in Settings",
+    "notInstalledPlaceholder": "{{agent}} is not installed. Open AI Agents in Settings.",
+    "askAboutNote": "Ask about this note...",
+    "askAgent": "Ask the AI agent...",
+    "askAgentAboutNote": "Ask {{agent}} about this note...",
+    "askAgentGeneric": "Ask {{agent}}...",
+    "emptyWithContext": "Ask about this note and its linked context",
+    "emptyWithContextAgent": "Ask {{agent}} about this note and its linked context",
+    "emptyNoContext": "Open a note, then ask the AI about it",
+    "emptyNoContextAgent": "Open a note, then ask {{agent}} about it",
+    "subtitleWithContext": "Summarize, find connections, expand ideas",
+    "subtitleNoContext": "The AI will use the active note as context"
+  },
+  "inbox": {
+    "week": "Week",
+    "month": "Month",
+    "all": "All"
   }
 }
