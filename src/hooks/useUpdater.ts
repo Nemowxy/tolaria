@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
+import { useCallback, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { isTauri } from '../mock-tauri'
 import {
   checkForAppUpdate,
@@ -114,12 +114,6 @@ export function useUpdater(
       return 'error'
     }
   }, [releaseChannel])
-
-  useEffect(() => {
-    if (!isTauri()) return
-    const timer = setTimeout(() => { checkForUpdates() }, 3000)
-    return () => clearTimeout(timer)
-  }, [checkForUpdates])
 
   const startDownload = useCallback(async () => {
     const update = updateRef.current

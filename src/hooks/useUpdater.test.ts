@@ -102,12 +102,6 @@ async function performManualCheck(
   return { result: hook.result, outcome }
 }
 
-async function advanceAutoCheck() {
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(3500)
-  })
-}
-
 describe('useUpdater', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -133,21 +127,23 @@ describe('useUpdater', () => {
     vi.mocked(isTauri).mockReturnValue(false)
 
     renderUpdater('stable')
-    await advanceAutoCheck()
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3500)
+    })
 
     expect(mockInvoke).not.toHaveBeenCalled()
   })
 
-  it('checks for stable updates after the startup delay', async () => {
+  it('does not auto-check for updates on startup, even in Tauri', async () => {
     vi.mocked(isTauri).mockReturnValue(true)
     installInvokeHandlers({ checkResult: null })
 
     renderUpdater('stable')
-    await advanceAutoCheck()
-
-    expect(mockInvoke).toHaveBeenCalledWith('check_for_app_update', {
-      releaseChannel: 'stable',
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10000)
     })
+
+    expect(mockInvoke).not.toHaveBeenCalled()
   })
 
   it('transitions to available when an alpha update is found', async () => {
