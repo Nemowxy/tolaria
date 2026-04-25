@@ -56,6 +56,7 @@ interface SettingsDraft {
   defaultAiAgent: AiAgentId
   releaseChannel: ReleaseChannel
   themeMode: ThemeMode
+  languagePreference: 'en' | 'zh' | undefined
   initialH1AutoRename: boolean
   crashReporting: boolean
   analytics: boolean
@@ -81,6 +82,8 @@ interface SettingsBodyProps {
   setReleaseChannel: (value: ReleaseChannel) => void
   themeMode: ThemeMode
   setThemeMode: (value: ThemeMode) => void
+  languagePreference: 'en' | 'zh' | undefined
+  setLanguagePreference: (value: 'en' | 'zh' | undefined) => void
   initialH1AutoRename: boolean
   setInitialH1AutoRename: (value: boolean) => void
   explicitOrganization: boolean
@@ -118,6 +121,7 @@ function createSettingsDraft(
     defaultAiAgent: resolveDefaultAiAgent(settings.default_ai_agent),
     releaseChannel: normalizeReleaseChannel(settings.release_channel),
     themeMode: resolveSettingsDraftThemeMode(settings.theme_mode),
+    languagePreference: settings.language_preference,
     initialH1AutoRename: settings.initial_h1_auto_rename_enabled ?? true,
     crashReporting: settings.crash_reporting_enabled ?? false,
     analytics: settings.analytics_enabled ?? false,
@@ -157,6 +161,7 @@ function buildSettingsFromDraft(settings: Settings, draft: SettingsDraft): Setti
     anonymous_id: resolveAnonymousId(settings, draft),
     release_channel: serializeReleaseChannel(draft.releaseChannel),
     theme_mode: draft.themeMode,
+    language_preference: draft.languagePreference,
     initial_h1_auto_rename_enabled: draft.initialH1AutoRename,
     default_ai_agent: draft.defaultAiAgent,
   }
@@ -297,6 +302,8 @@ function SettingsPanelInner({
           setReleaseChannel={(value) => updateDraft('releaseChannel', value)}
           themeMode={draft.themeMode}
           setThemeMode={(value) => updateDraft('themeMode', value)}
+          languagePreference={draft.languagePreference}
+          setLanguagePreference={(value) => updateDraft('languagePreference', value)}
           initialH1AutoRename={draft.initialH1AutoRename}
           setInitialH1AutoRename={(value) => updateDraft('initialH1AutoRename', value)}
           explicitOrganization={draft.explicitOrganization}
@@ -351,6 +358,8 @@ function SettingsBody({
   setReleaseChannel,
   themeMode,
   setThemeMode,
+  languagePreference,
+  setLanguagePreference,
   initialH1AutoRename,
   setInitialH1AutoRename,
   explicitOrganization,
@@ -387,6 +396,13 @@ function SettingsBody({
         <AppearanceSettingsSection
           themeMode={themeMode}
           setThemeMode={setThemeMode}
+        />
+      </SettingsSection>
+
+      <SettingsSection>
+        <LanguageSettingsSection
+          languagePreference={languagePreference}
+          setLanguagePreference={setLanguagePreference}
         />
       </SettingsSection>
 
@@ -477,6 +493,45 @@ function AppearanceSettingsSection({
       />
 
       <ThemeModeControl value={themeMode} onChange={setThemeMode} />
+    </>
+  )
+}
+
+const LANGUAGE_PREFERENCE_SYSTEM = 'system'
+
+type LanguagePreferenceValue = 'en' | 'zh' | undefined
+
+function serializeLanguagePreference(value: LanguagePreferenceValue): string {
+  return value ?? LANGUAGE_PREFERENCE_SYSTEM
+}
+
+function deserializeLanguagePreference(value: string): LanguagePreferenceValue {
+  if (value === 'en' || value === 'zh') return value
+  return undefined
+}
+
+function LanguageSettingsSection({
+  languagePreference,
+  setLanguagePreference,
+}: Pick<SettingsBodyProps, 'languagePreference' | 'setLanguagePreference'>) {
+  return (
+    <>
+      <SectionHeading
+        title="Language"
+        description="Choose the display language for Tolaria's interface."
+      />
+
+      <LabeledSelect
+        label="Display language"
+        value={serializeLanguagePreference(languagePreference)}
+        onValueChange={(value) => setLanguagePreference(deserializeLanguagePreference(value))}
+        options={[
+          { value: LANGUAGE_PREFERENCE_SYSTEM, label: 'Follow system' },
+          { value: 'en', label: 'English' },
+          { value: 'zh', label: '中文' },
+        ]}
+        testId="settings-language-preference"
+      />
     </>
   )
 }

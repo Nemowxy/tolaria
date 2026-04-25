@@ -16,6 +16,7 @@ const emptySettings: Settings = {
   anonymous_id: null,
   release_channel: null,
   theme_mode: null,
+  language_preference: undefined,
 }
 
 function installPointerCapturePolyfill() {
@@ -358,6 +359,60 @@ describe('SettingsPanel', () => {
       <SettingsPanel open={true} settings={emptySettings} onSave={onSave} onClose={onClose} />
     )
     expect(screen.getByText(/to open settings/)).toBeInTheDocument()
+  })
+
+  describe('Language section', () => {
+    it('renders the Language section heading', () => {
+      render(
+        <SettingsPanel open={true} settings={emptySettings} onSave={onSave} onClose={onClose} />
+      )
+      expect(screen.getByText('Language')).toBeInTheDocument()
+    })
+
+    it('defaults the language selector to Follow system', () => {
+      render(
+        <SettingsPanel open={true} settings={emptySettings} onSave={onSave} onClose={onClose} />
+      )
+      expect(screen.getByTestId('settings-language-preference')).toHaveAttribute('data-value', 'system')
+    })
+
+    it('reflects a saved language preference', () => {
+      render(
+        <SettingsPanel
+          open={true}
+          settings={{ ...emptySettings, language_preference: 'zh' }}
+          onSave={onSave}
+          onClose={onClose}
+        />
+      )
+      expect(screen.getByTestId('settings-language-preference')).toHaveAttribute('data-value', 'zh')
+    })
+
+    it('updates the draft when a language is selected', () => {
+      render(
+        <SettingsPanel open={true} settings={emptySettings} onSave={onSave} onClose={onClose} />
+      )
+
+      fireEvent.pointerDown(screen.getByTestId('settings-language-preference'), { button: 0, pointerType: 'mouse' })
+      fireEvent.click(screen.getByRole('option', { name: '中文' }))
+      fireEvent.click(screen.getByTestId('settings-save'))
+
+      expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
+        language_preference: 'zh',
+      }))
+    })
+
+    it('saves undefined language_preference for Follow system', () => {
+      render(
+        <SettingsPanel open={true} settings={emptySettings} onSave={onSave} onClose={onClose} />
+      )
+
+      fireEvent.click(screen.getByTestId('settings-save'))
+
+      expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
+        language_preference: undefined,
+      }))
+    })
   })
 
   describe('Privacy & Telemetry section', () => {
