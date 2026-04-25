@@ -140,6 +140,28 @@ describe('useSettings', () => {
     warnSpy.mockRestore()
   })
 
+  it('persists language_preference through save and reload', async () => {
+    const { result } = renderHook(() => useSettings())
+
+    await waitFor(() => {
+      expect(result.current.loaded).toBe(true)
+    })
+
+    const withLanguage: Settings = {
+      ...defaultSettings,
+      language_preference: 'zh',
+    }
+
+    await act(async () => {
+      await result.current.saveSettings(withLanguage)
+    })
+
+    expect(result.current.settings.language_preference).toBe('zh')
+    expect(mockInvokeFn).toHaveBeenCalledWith('save_settings', {
+      settings: withLanguage,
+    })
+  })
+
   it('handles save error gracefully', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const { result } = renderHook(() => useSettings())
